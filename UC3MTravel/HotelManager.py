@@ -11,20 +11,22 @@ class HotelManager:
         # RETURN TRUE IF THE GUID IS RIGHT, OR FALSE IN OTHER CASE
         contador = 0
         suma = 0
-        for pares in x:
+        for pares in reversed(x):
             contador += 1
+            pares = int(pares)
             if contador%2 != 0:
                 pares = 2*pares
-                if pares > 10:
+                if pares > 9:
                     pares = pares - 9
             suma += pares
 
         comprobar = suma%10
-        if comprobar != 0:
+        if comprobar == 0:
+            print("número de tarjeta válido")
+            return True
+        else:
             print("número de tarjeta erróneo")
             return False
-
-        return True
 
     def ReaddatafromJSOn( self, fi):
 
