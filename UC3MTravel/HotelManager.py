@@ -6,7 +6,7 @@ class HotelManager:
     def __init__(self):
         pass
 
-    def validatecreditcard( self, x ):
+    def validatecreditcard(self, x):
         # PLEASE INCLUDE HERE THE CODE FOR VALIDATING THE GUID
         # RETURN TRUE IF THE GUID IS RIGHT, OR FALSE IN OTHER CASE
         contador = 0
@@ -28,7 +28,7 @@ class HotelManager:
             print("número de tarjeta erróneo")
             return False
 
-    def ReaddatafromJSOn( self, fi):
+    def ReaddatafromJSOn(self, fi):
 
         try:
             with open(fi) as f:
