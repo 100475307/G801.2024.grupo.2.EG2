@@ -1,3 +1,6 @@
+"""
+archivo build
+"""
 #   -*- coding: utf-8 -*-
 from pybuilder.core import use_plugin, init
 
@@ -8,10 +11,12 @@ use_plugin("python.coverage")
 use_plugin("python.distutils")
 
 
-name = "Proyecto prueba"
-default_task = "publish"
+NAME = "Proyecto prueba"
+DEFAULT_TASK = "publish"
 
 
 @init
-def set_properties(project):
-    pass
+def setProperties():
+    """
+    esta funcion hace un pass
+    """
