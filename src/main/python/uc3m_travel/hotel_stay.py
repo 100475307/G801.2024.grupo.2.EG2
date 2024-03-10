@@ -5,7 +5,13 @@ from datetime import datetime
 import hashlib
 
 class hotel_stay():
-    def __init__(self, idcard, localizer, numdays, roomtype  ):
+    """
+    clase hotel_stay
+    """
+    def __init__(self, idcard, localizer, numdays, roomtype):
+        """
+        metodo __init__
+        """
         self.__alg = "SHA-256"
         self.__type = roomtype
         self.__idcard = idcard
@@ -23,12 +29,12 @@ class hotel_stay():
             ",departure:" + self.__departure + "}"
 
     @property
-    def idCard(self):
+    def id_card(self):
         """Property that represents the product_id of the patient"""
         return self.__idcard
 
-    @idCard.setter
-    def icCard(self, value):
+    @id_card.setter
+    def ic_card(self, value):
         self.__idcard = value
 
     @property
