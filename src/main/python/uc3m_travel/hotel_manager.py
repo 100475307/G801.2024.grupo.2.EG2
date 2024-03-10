@@ -55,7 +55,7 @@ class hotel_manager:
         try:
             c = data["CreditCard"]
             p = data["phoneNumber"]
-            req = hotel_reservation(IDCARD="12345678Z",creditcardNumb=c,nAMeAndSURNAME="John Doe",phonenumber=p,room_type="single",numdays=3)
+            req = hotel_reservation(id_card="12345678Z",credit_card_numb=c,name_and_surname="John Doe",phone_number=p,room_type="single",num_days=3)
         except KeyError as e:
             raise hotel_management_exception("JSON Decode Error - Invalid JSON Key") from e
         if not self.validatecreditcard(c):
