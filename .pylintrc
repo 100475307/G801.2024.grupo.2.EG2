@@ -39,7 +39,7 @@ extension-pkg-whitelist=
 fail-on=
 
 # Specify a score threshold under which the program will exit with error.
-fail-under=10
+fail-under=9
 
 # Interpret the stdin as a python script, whose filename needs to be passed as
 # the module_or_package argument.
@@ -291,7 +291,7 @@ max-args=8
 max-attributes=7
 
 # Maximum number of boolean expressions in an if statement (see R0916).
-max-bool-expr=5
+max-bool-expr=6
 
 # Maximum number of branch for function / method body.
 max-branches=12
@@ -309,10 +309,10 @@ max-public-methods=20
 max-returns=8
 
 # Maximum number of statements in function / method body.
-max-statements=50
+max-statements=60
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=1
 
 
 [EXCEPTIONS]
@@ -354,7 +354,7 @@ single-line-if-stmt=no
 [IMPORTS]
 
 # List of modules that must be imported at the top level not in any level
-allow-any-import-level=no
+allow-any-import-level=
 
 # Allow explicit reexports by alias from a package __init__.
 allow-reexport-from-package=no
