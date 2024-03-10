@@ -2,8 +2,8 @@
 clase hotel_manager
 """
 import json
-from .hotel_management_exception import hotel_management_exception
-from .hotel_reservation import hotel_reservation
+from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
+from src.main.python.uc3m_travel.hotel_reservation import hotel_reservation
 
 class hotel_manager:
     """
@@ -39,13 +39,13 @@ class hotel_manager:
             return False
         return True
 
-    def ReaddatafromJSOn(self, fi):
+    def read_data_from_json(self, fi):
         """
         funcion leer datos de json
         """
         try:
-            with open(fi) as f:
-                DATA = json.load(f)
+            with open(fi, "r", encoding="utf-8") as f:
+                data = json.load(f)
         except FileNotFoundError as e:
             raise hotel_management_exception("Wrong file or file path") from e
         except json.JSONDecodeError as e:
@@ -53,8 +53,8 @@ class hotel_manager:
 
 
         try:
-            c = DATA["CreditCard"]
-            p = DATA["phoneNumber"]
+            c = data["CreditCard"]
+            p = data["phoneNumber"]
             req = hotel_reservation(IDCARD="12345678Z",creditcardNumb=c,nAMeAndSURNAME="John Doe",phonenumber=p,room_type="single",numdays=3)
         except KeyError as e:
             raise hotel_management_exception("JSON Decode Error - Invalid JSON Key") from e
