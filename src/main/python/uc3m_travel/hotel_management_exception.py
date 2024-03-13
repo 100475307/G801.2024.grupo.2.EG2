@@ -1,7 +1,7 @@
 """
 clase hotel_management_exception
 """
-#prueba de push
+#prueba de pussh
 class hotel_management_exception(Exception):
     """
     clase hotel_management_exception
