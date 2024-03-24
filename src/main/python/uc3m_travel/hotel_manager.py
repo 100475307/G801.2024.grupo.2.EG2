@@ -2,8 +2,11 @@
 clase hotel_manager
 """
 import json
-from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
-from src.main.python.uc3m_travel.hotel_reservation import hotel_reservation
+import hashlib
+from luhn import verify
+from .hotel_management_exception import hotel_management_exception
+from .hotel_reservation import hotel_reservation
+
 
 class hotel_manager:
     """
@@ -18,26 +21,13 @@ class hotel_manager:
         """
         funcion para verificar tarjeta
         """
-        # PLEASE INCLUDE HERE THE CODE FOR VALIDATING THE GUID
-        # RETURN TRUE IF THE GUID IS RIGHT, OR FALSE IN OTHER CASE
-        contador = 0
-        suma = 0
-        for pares in reversed(x):
-            contador += 1
-            pares = int(pares)
-            if contador%2 != 0:
-                pares = 2*pares
-                if pares > 9:
-                    pares = pares - 9
-            suma += pares
+        verify (x)
 
-        comprobar = suma%10
-        if comprobar == 0:
-            print("número de tarjeta válido")
-        else:
-            print("número de tarjeta erróneo")
-            return False
-        return True
+    def validateidcard(self, x):
+        """
+        funcion para verificar tarjeta
+        """
+        pass
 
     def read_data_from_json(self, fi):
         """
