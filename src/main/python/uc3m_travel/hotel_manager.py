@@ -14,10 +14,13 @@ class hotel_manager:
     """
     clase hotel_manager
     """
+    _json_path = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
+                     r"\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel\json_files")
     def __init__(self):
         """
         hace pass del init
         """
+        pass
 
     def validatecreditcard(self, x):
         """
