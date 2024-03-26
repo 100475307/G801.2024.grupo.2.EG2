@@ -12,13 +12,13 @@ from src.main.python.uc3m_travel.hotel_manager import hotel_manager
 
 class test_room_reservation(TestCase):
     """Test room reservation"""
-    __path_tests = str("C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\test.json")
-    __path_data = str("C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\test.json")
+    __path_tests = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel\json_files")
+    __path_data = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel\json_files")
 
     def setUp(self):
         """setUp"""
         try:
-            with open(self.__path_tests + "tests1.json", encoding='UTF-8', mode="r") as f:
+            with open(self.__path_tests + r"\tests1.json", encoding='UTF-8', mode="r") as f:
                 test_room_reservation = json.load(f)
         except FileNotFoundError as e:
             raise hotel_management_exception("error en fichero o camino") from e
@@ -38,7 +38,26 @@ class test_room_reservation(TestCase):
                                                 input_data["name_surname"], input_data["phone_number"],
                                                 input_data["room_type"], input_data["arrival"],
                                                 input_data["num_days"])
-                self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien con localizador*************************************************************
+                print(localizer)
+                if input_data["id_test"] == "TC1":
+
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien con localizador*************************************************************
+                if input_data["id_test"] == "TC6":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
+                if input_data["id_test"] == "TC8":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
+                if input_data["id_test"] == "TC13":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
+                if input_data["id_test"] == "TC17":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
+                if input_data["id_test"] == "TC18":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
+                if input_data["id_test"] == "TC9":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
+                if input_data["id_test"] == "TC21":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
+                if input_data["id_test"] == "TC31":
+                    self.assertEqual(localizer, "d41d8cd98f00v204e9800998ecf8427e") #rellenar bien *******
             try:
                 with open(self.__path_data + "/all_bookings.json", encoding='UTF-8', mode="r") as f: #ver json
                     bookings = json.load(f)
