@@ -10,11 +10,11 @@ from src.main.python.uc3m_travel.hotel_management_exception import hotel_managem
 from src.main.python.uc3m_travel.hotel_manager import hotel_manager
 
 
-
 class test_room_reservation(TestCase):
     """Test room reservation"""
     __path_tests = str("C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\test.json")
     __path_data = str("C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\test.json")
+
     def setUp(self):
         """setUp"""
         try:
@@ -25,6 +25,9 @@ class test_room_reservation(TestCase):
         except json.JSONDecodeError:
             test_room_reservation = []
         self.__test_room_reservation = test_room_reservation
+
+    def localizer(self):
+        return hashlib.md5(str().encode()).hexdigest()
 
     def test_hotel_reservation_ok(self):
         """Test hotel reservation"""
@@ -123,10 +126,6 @@ class test_room_reservation(TestCase):
                             self.assertEqual(result.exception.message,"No more than one reservation per client")
 
 
-
-
-    def localizer(self):
-        return hashlib.md5(str().encode()).hexdigest()
 
 #carmen .............................
 """TestCases - Expected NOT OK.
