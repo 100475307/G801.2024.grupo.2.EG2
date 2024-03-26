@@ -76,7 +76,7 @@ class test_room_reservation(TestCase):
         """Tests función 1 que se esperan not ok"""
         for inputData in self.__test_room_reservation:
             if inputData["id_test"] not in ["TC1", "TC6", "TC8", "TC13", "TC17", "TC18", "TC19", "TC21", "TC31"]:
-                with self.subTest(inputData["idTest"]):
+                with self.subTest(inputData["id_test"]):
                     hm = hotel_manager()
                     with self.assertRaises(hotel_management_exception) as result:
                         hm.room_reservation(inputData["credit_card_number"], inputData["id_card"],

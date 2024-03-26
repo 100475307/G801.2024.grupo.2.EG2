@@ -57,7 +57,7 @@ class hotel_manager:
         # Close the file
         return req
 
-def room_reservation(credit_card_numb, name_and_surname, id_card, phone_number, room_type, arrival, num_days):
+def room_reservation(self, credit_card_numb, name_and_surname, id_card, phone_number, room_type, arrival, num_days):
     """Devuelve una cadena que representa HM-FR-01-O1
     En caso de errores, devuelve una hotel_management_exception representa HM-FR-01-O2"""
     # Verificar HM-FR-01-I1: Número de tarjeta de crédito válido
@@ -94,15 +94,30 @@ def room_reservation(credit_card_numb, name_and_surname, id_card, phone_number, 
     except ValueError:
         raise hotel_management_exception("HM-FR-01-I7: Número de noches inválido")
 
+
+    # hemos pasado las pruebas por lo que datos correctos
+    # añadimos información al fichero json
+    reserva = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
+    for i in reserva:
+        if reserva["id_card"] == id_card:
+            raise hotel_management_exception("No puede haber más de una reserva por cliente")
+
+    booking = hotel_reservation(credit_card_numb, id_card, name_and_surname, phone_number, room_type, arrival, num_days)
+    localizador = booking.localizer
+
+    print("localizador", localizador)
+
+
+    #almacenamos los datos de la reserva en el json de reservas
+    pedido = {"credi_card_numb": credit_card_numb, "id_card": id_card, "name_and_surname": name_and_surname, "phone_number": phone_number, "room_type": room_type, "arrival": arrival, "num_days": num_days, "localizador": localizador}
+    reserva.append(pedido)
+    self.read_data_from_json(self.__json_path + r"\reservas.json")
+
+
     # Todo está correcto, se puede proceder con la reserva
     print("Reserva realizada exitosamente.")
+    return localizador
 
-
-# Ejemplo de uso
-try:
-    room_reservation('1234567812345678', 'John Doe', '12345678Z', '123456789', 'single', '01/07/2024', '5')
-except hotel_management_exception as e:
-    print("Error:", e)
 
 
 """
