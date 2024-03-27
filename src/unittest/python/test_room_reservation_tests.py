@@ -3,10 +3,9 @@ import json
 import os.path
 from pathlib import Path
 import unittest
-
 from unittest import TestCase
-from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
-from src.main.python.uc3m_travel.hotel_manager import hotel_manager
+from src.main.python.uc3m_travel import hotel_management_exception
+from src.main.python.uc3m_travel import hotel_manager
 
 
 class test_room_reservation(TestCase):
