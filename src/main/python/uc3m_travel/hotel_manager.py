@@ -121,33 +121,59 @@ class hotel_manager:
         print("Reserva realizada exitosamente.")
         return localizador
 
+#######################     FUNCION 2      ###################################################
+class HotelStay:
+    def __init__(self, alg, typ, localizer, idcard, arrival, departure, room_key):
+        self.alg = alg
+        self.typ = typ
+        self.localizer = localizer
+        self.idcard = idcard
+        self.arrival = arrival
+        self.departure = departure
+        self.room_key = room_key
 
 
-    """
-        def validateidcard(self, x):
-    
-            #funcion para verificar id
-            #compramos que tiene la longitud correcta
-            if len(x) != 9:
-                return False #devolver el error *****************
-    
-            #comprobamos que los 8 primeros caracteres son dígitos
-            if not x[:8].isdigit():
-                return False #devolver el error **********
-    
-            #comprobamos que el último caracter es una letra
-            if not x[8].isalpha():
-                return False #devolver el error ********
-    
-            letras_validas = 'TRWAGMYFPDXBNJZSQVHLCKE'
-    
-            id_number = int(x[:8])
-    
-            #calculo la letra esperada
-            letra_esperada = id_number % 23
-    
-            #comparo la letra esperada con la real
-            if x[8].upper() != letras_validas[letra_esperada]:
-                return False #devolver el error *********
-            return True #no da error ******
-    """
+def guest_arrival(fichero_reservas):
+    try:
+        with open(fichero_reservas, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError as e:
+        raise hme.hotel_management_exception("Wrong file or file path") from e
+    except json.JSONDecodeError as e:
+        raise hme.hotel_management_exception("JSON Decode Error - Wrong JSON Format") from e
+    with open(fichero_reservas, 'r') as file:
+        data = json.load(file)
+
+    localizer = data.get('Localizer')
+
+    with open(fichero_reservas, 'r') as file:
+        reservations_data = file.read()
+
+    #comprobar que el localizador está en reservas
+    if localizer in reservations_data:
+        num_days = data.get('num_days')
+
+        #salida = llegada mas dias de estancia en segundos
+        arrival = datetime.utcnow().timestamp()
+        departure = arrival + (num_days * 86400)
+
+        room_key_data = {
+            "alg": "SHA-256",
+            "typ": "room_key",
+            "localizer": localizer,
+            "arrival": arrival,
+            "departure": departure
+        }
+        room_key_text = json.dumps(room_key_data, separators=(',', ':'))#Convertir a JSON sin espacios
+
+        # Calcula el SHA-256
+        room_key_hash = hashlib.sha256(room_key_text.encode()).hexdigest()
+
+        #guardamos el hash en un fichero
+        with open('hotel_stays.txt', 'a') as file:
+            file.write(f"Localizer: {localizer}, Room Key: {room_key_hash}\n")
+
+        return room_key_hash
+    else:
+        #el localizador no esta en reservas
+        raise hme.hotel_management_exception("El localizador de reserva no esta en el fichero de reservas")

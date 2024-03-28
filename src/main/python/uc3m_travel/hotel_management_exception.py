@@ -6,7 +6,7 @@ class hotel_management_exception(Exception):
     """
     clase hotel_management_exception
     """
-    def __init__(self, message):
+    def __init__(self, message: object) -> object:
         """
         init
         """

@@ -1,11 +1,9 @@
 """tests"""
 import json
 import os.path
-from pathlib import Path
-import unittest
 from unittest import TestCase
-from src.main.python.uc3m_travel import hotel_management_exception as hme
 from src.main.python.uc3m_travel import hotel_manager as hm
+from src.main.python.uc3m_travel import hotel_management_exception as hme
 
 
 class test_room_reservation(TestCase):
