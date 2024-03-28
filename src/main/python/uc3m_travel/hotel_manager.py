@@ -4,8 +4,8 @@ clase hotel_manager
 import json
 import hashlib
 from luhn import verify
-from src.main.python.uc3m_travel import hotel_management_exception
-from src.main.python.uc3m_travel import hotel_reservation
+import hotel_management_exception as hme
+import hotel_reservation
 from stdnum import es
 import re
 from datetime import datetime, timedelta
@@ -24,8 +24,10 @@ class hotel_manager:
 
     def validatecreditcard(self, x):
         """
-        funcion para verificar tarjeta
+        funcion para verificar tarjeta. Devuelve True o False
         """
+        if not x.isdigit():
+            return False
         verify (x)
 
     def validateidcard(self, x):
@@ -40,51 +42,52 @@ class hotel_manager:
             with open(fi, "r", encoding="utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError as e:
-            raise hotel_management_exception("Wrong file or file path") from e
+            raise hme.hotel_management_exception("Wrong file or file path") from e
         except json.JSONDecodeError as e:
-            raise hotel_management_exception("JSON Decode Error - Wrong JSON Format") from e
+            raise hme.hotel_management_exception("JSON Decode Error - Wrong JSON Format") from e
 
 
         try:
-            c = data["CreditCard"]
+            c = data["credit_card_number"]
             p = data["phoneNumber"]
-            req = hotel_reservation(id_card="12345678Z",credit_card_numb=c,name_and_surname="John Doe",phone_number=p,room_type="single",num_days=3)
+            req = hotel_reservation(id_card="12345678Z",credit_card_number=c,name_and_surname="John Doe",phone_number=p,room_type="single",num_days=3)
         except KeyError as e:
-            raise hotel_management_exception("JSON Decode Error - Invalid JSON Key") from e
+            raise hme.hotel_management_exception("JSON Decode Error - Invalid JSON Key") from e
         if not self.validatecreditcard(c):
-            raise hotel_management_exception("Invalid credit card number")
+            raise hme.hotel_management_exception("Invalid credit card number")
 
         # Close the file
         return req
 
-    def room_reservation(self, credit_card_numb, name_and_surname, id_card, phone_number, room_type, arrival, num_days):
+    def room_reservation(self, credit_card_number, id_card, name_and_surname, phone_number, room_type, arrival, num_days):
         """Devuelve una cadena que representa HM-FR-01-O1
         En caso de errores, devuelve una hotel_management_exception representa HM-FR-01-O2"""
         # Verificar HM-FR-01-I1: Número de tarjeta de crédito válido
-        if not verify(credit_card_numb):
-            raise hotel_management_exception("HM-FR-01-I1: Número de tarjeta de crédito inválido")
+        if not self.validatecreditcard(credit_card_number):
+            print("ENTRA EN CREDIT CARD")
+            raise hme.hotel_management_exception("Invalid credit card number provided")
 
         # Verificar HM-FR-01-I2: DNI válido
-        if not es.dni.is_valid(id_card):
-            raise hotel_management_exception("HM-FR-01-I2: DNI inválido")
+        if not self.validateidcard(id_card):
+            raise hme.hotel_management_exception("Invalid identification number")
 
         # Verificar HM-FR-01-I3: Nombre y apellidos válidos
         if len(name_and_surname.split()) < 2 or len(name_and_surname) < 10 or len(name_and_surname) > 50:
-            raise hotel_management_exception("HM-FR-01-I3: Nombre y apellidos inválidos")
+            raise hme.hotel_management_exception("Invalid name and surname")
 
         # Verificar HM-FR-01-I4: Número de teléfono válido
         if not phone_number.isdigit() or len(phone_number) != 9:
-            raise hotel_management_exception("HM-FR-01-I4: Número de teléfono inválido")
+            raise hme.hotel_management_exception("Invalid phone number")
 
         # Verificar HM-FR-01-I5: Tipo de habitación válido
         if room_type not in {'single', 'double', 'suite'}:
-            raise hotel_management_exception("HM-FR-01-I5: Tipo de habitación inválido")
+            raise hme.hotel_management_exception("Invalid room type")
 
         # Verificar HM-FR-01-I6: Formato de fecha de llegada válido
         try:
             datetime.strptime(arrival, '%d/%m/%Y')
         except ValueError:
-            raise hotel_management_exception("HM-FR-01-I6: Formato de fecha de llegada inválido")
+            raise hme.hotel_management_exception("HM-FR-01-I6: Formato de fecha de llegada inválido")
 
         # Verificar HM-FR-01-I7: Número de noches válido
         try:
@@ -92,7 +95,7 @@ class hotel_manager:
             if num_days < 1 or num_days > 10:
                 raise ValueError
         except ValueError:
-            raise hotel_management_exception("HM-FR-01-I7: Número de noches inválido")
+            raise hme.hotel_management_exception("HM-FR-01-I7: Número de noches inválido")
 
 
         # hemos pasado las pruebas por lo que datos correctos
@@ -100,16 +103,16 @@ class hotel_manager:
         reserva = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
         for i in reserva:
             if reserva["id_card"] == id_card:
-                raise hotel_management_exception("No puede haber más de una reserva por cliente")
+                raise hme.hotel_management_exception("No puede haber más de una reserva por cliente")
 
-        booking = hotel_reservation(credit_card_numb, id_card, name_and_surname, phone_number, room_type, arrival, num_days)
+        booking = hotel_reservation(credit_card_number, id_card, name_and_surname, phone_number, room_type, arrival, num_days)
         localizador = booking.localizer
 
         print("localizador", localizador)
 
 
         #almacenamos los datos de la reserva en el json de reservas
-        pedido = {"credi_card_numb": credit_card_numb, "id_card": id_card, "name_and_surname": name_and_surname, "phone_number": phone_number, "room_type": room_type, "arrival": arrival, "num_days": num_days, "localizador": localizador}
+        pedido = {"credit_card_number": credit_card_number, "id_card": id_card, "name_and_surname": name_and_surname, "phone_number": phone_number, "room_type": room_type, "arrival": arrival, "num_days": num_days, "localizador": localizador}
         reserva.append(pedido)
         self.read_data_from_json(self.__json_path + r"\reservas.json")
 

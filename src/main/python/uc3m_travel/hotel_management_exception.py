@@ -1,6 +1,7 @@
 """
 clase hotel_management_exception
 """
+
 class hotel_management_exception(Exception):
     """
     clase hotel_management_exception

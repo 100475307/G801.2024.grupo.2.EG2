@@ -4,8 +4,8 @@ import os.path
 from pathlib import Path
 import unittest
 from unittest import TestCase
-from src.main.python.uc3m_travel import hotel_management_exception
-from src.main.python.uc3m_travel import hotel_manager
+from src.main.python.uc3m_travel import hotel_management_exception as hme
+from src.main.python.uc3m_travel import hotel_manager as hm
 
 
 class test_room_reservation(TestCase):
@@ -21,7 +21,7 @@ class test_room_reservation(TestCase):
             with open(self.__path_tests + r"\tests1.json", encoding='UTF-8', mode="r") as f:
                 testroomreservation = json.load(f)
         except FileNotFoundError as e:
-            raise hotel_management_exception("error en fichero o camino") from e
+            raise hme.hotel_management_exception("error en fichero o camino") from e
         except json.JSONDecodeError:
             testroomreservation = []
         self.__test_room_reservation = testroomreservation
@@ -34,7 +34,7 @@ class test_room_reservation(TestCase):
         """Tests función 1 que se esperan correctos"""
         for inputData in self.__test_room_reservation:
             if inputData["id_test"] == ["TC1", "TC6", "TC8", "TC13", "TC17", "TC18", "TC19", "TC21", "TC31"]:
-                hm = hotel_manager()
+                #hm = hotel_manager()
                 localizer = hm.room_reservation(inputData["credit_card_number"], inputData["id_card"],
                                                 inputData["name_surname"], inputData["phone_number"],
                                                 inputData["room_type"], inputData["arrival"],
@@ -62,7 +62,7 @@ class test_room_reservation(TestCase):
                 with open(self.__path_data + r"\reservas.json", encoding='UTF-8', mode="r") as f: #ver json
                     bookings = json.load(f)
             except FileNotFoundError as e:
-                raise hotel_management_exception("error en fichero o camino") from e
+                raise hme.hotel_management_exception("error en fichero o camino") from e
             except json.JSONDecodeError:
                 bookings = []
             bookingfound = False
@@ -76,8 +76,8 @@ class test_room_reservation(TestCase):
         for inputData in self.__test_room_reservation:
             if inputData["id_test"] not in ["TC1", "TC6", "TC8", "TC13", "TC17", "TC18", "TC19", "TC21", "TC31"]:
                 with self.subTest(inputData["id_test"]):
-                    hm = hotel_manager()
-                    with self.assertRaises(hotel_management_exception) as result:
+                    #hm = hotel_manager()
+                    with self.assertRaises(hme.hotel_management_exception) as result:
                         hm.room_reservation(inputData["credit_card_number"], inputData["id_card"],
                                                         inputData["name_surname"], inputData["phone_number"],
                                                         inputData["room_type"], inputData["arrival"],
