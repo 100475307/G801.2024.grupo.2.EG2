@@ -13,6 +13,8 @@ class hotel_management_exception(Exception):
         self.__message = message
         super().__init__(self.message)
 
+    def __str__(self):
+        return f"hotel_management_exception: {self.__message}"
     @property
     def message(self):
         """

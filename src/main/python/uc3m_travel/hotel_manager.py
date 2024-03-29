@@ -124,6 +124,7 @@ class hotel_manager:
     def room_reservation(self, credit_card_number, id_card, name_and_surname, phone_number, room_type, arrival, num_days):
         '''Room Reservation'''
         if not self.validatecreditcard(credit_card_number):
+            print("PASA POR AQUIIII")
             raise hme(
                 "Tarjeta erronea. No cumple con el algoritmo de Luhn")
         if len(credit_card_number) > 16:
@@ -155,6 +156,9 @@ class hotel_manager:
         if '  ' in name_and_surname:
             raise hme(
                 "Nombre y/o apellido erróneos. No puede usar dos espacios consecutivos")
+
+        if not all(caracter.isalpha() or caracter.isspace() for caracter in name_and_surname):
+            raise hme("Nombre y/o apellido erróneos. Contiene letras")
 
         if len(phone_number) > 9:
             raise hme(

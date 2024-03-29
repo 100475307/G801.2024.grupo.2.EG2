@@ -49,7 +49,7 @@
 },  {
     "id_test": "TC6",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678Z",
+    "id_card": "96014812R",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -58,7 +58,7 @@
 },  {
     "id_test": "TC7",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678A",
+    "id_card": "12345678J",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -67,7 +67,7 @@
 },  {
     "id_test": "TC8",
     "credit_card_number": "5555555555554444",
-    "id_card": "96014812R",
+    "id_card": "59204901A",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -113,7 +113,7 @@
 },  {
     "id_test": "TC13",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678Z",
+    "id_card": "25149918Q",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -149,7 +149,7 @@
 },{
     "id_test": "TC17",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678Z",
+    "id_card": "72969770Q",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -158,7 +158,7 @@
 }, {
     "id_test": "TC18",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678Z",
+    "id_card": "63256479Q",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -167,7 +167,7 @@
 }, {
     "id_test": "TC19",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678Z",
+    "id_card": "45077596B",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -185,7 +185,7 @@
 }, {
     "id_test": "TC21",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678Z",
+    "id_card": "40931229S",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
@@ -275,7 +275,7 @@
 },{
     "id_test": "TC31",
     "credit_card_number": "5555555555554444",
-    "id_card": "12345678Z",
+    "id_card": "21281032Y",
     "name_and_surname": "JOSE LOPEZ",
     "phone_number": "911234567",
     "room_type": "single",
