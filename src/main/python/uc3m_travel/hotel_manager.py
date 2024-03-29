@@ -125,7 +125,7 @@ class hotel_manager:
         '''Room Reservation'''
         if not self.validatecreditcard(credit_card_number):
             print("PASA POR AQUIIII")
-            raise hme(
+            return(
                 "Tarjeta erronea. No cumple con el algoritmo de Luhn")
         if len(credit_card_number) > 16:
             raise hme(
@@ -265,4 +265,4 @@ def guest_arrival(fichero_reservas):
         return room_key_hash
     else:
         #el localizador no esta en reservas
-        raise hme.hotel_management_exception("El localizador de reserva no esta en el fichero de reservas")
+        raise hme("El localizador de reserva no esta en el fichero de reservas")

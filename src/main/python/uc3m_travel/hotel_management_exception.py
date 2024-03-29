@@ -10,6 +10,7 @@ class hotel_management_exception(Exception):
         """
         init
         """
+        print("ENTRS INITTTT")
         self.__message = message
         super().__init__(self.message)
 
@@ -21,6 +22,7 @@ class hotel_management_exception(Exception):
         hace un return
         :return:
         """
+        print("ENTRA MESSAGEEEEE")
         return self.__message
 
     @message.setter

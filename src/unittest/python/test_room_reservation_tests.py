@@ -104,7 +104,7 @@ class TestRoomReservation(TestCase):
                     hm = hotel_manager()
                     print("id_test", inputData["id_test"])
                     with self.assertRaises(hotel_management_exception) as result:
-
+                        print("HOLA*****************")
                         hm.room_reservation(inputData["credit_card_number"],
                                             inputData["id_card"],
                                             inputData["name_and_surname"],
