@@ -64,7 +64,7 @@ class hotel_manager:
             return False
 
         #verificar que no tiene dígitos
-        if not partesfecha[0].isdigit() or not partesfecha[1].isdigit() or not partesfecha[2].isdigit():
+        if not partesfecha[0].isdigit() or not partesfecha[1].isdigit():
             return False
         #verificar que máximo 31 días y mínimo 1
         dia = int(partesfecha[0])
@@ -74,10 +74,6 @@ class hotel_manager:
         # Verificar que el mes esté entre 1 y 12
         mes = int(partesfecha[1])
         if mes < 1 or mes > 12:
-            return False
-
-        # Verificar que no haya números en el año
-        if any(c.isdigit() for c in partesfecha[2]):
             return False
 
         #verificar febrero y días en función de si es bisiesto
@@ -181,14 +177,14 @@ class hotel_manager:
             raise hme("Número de días no válido")
         #Si hemos pasado todas las pruebas, tenemos datos correctos
         # Comprobamos que el cliente no tenga ya reservas
-        reservas = self.readDatafromjson(self.__json_path + r"\reservas.json", "r")
+        reservas = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
         for reserva in reservas:
             if reserva["id_card"] == id_card:
                 raise hme(
                     "There can´t be more than 1 reservation per client")
         # Creamos el localizador
         booking = hr(credit_card_number, id_card, name_and_surname,
-                     phone_number, room_type, num_days)
+                     phone_number, room_type, arrival, num_days)
         localizador = booking.localizer
         print("Localizador creado:", localizador)
 
