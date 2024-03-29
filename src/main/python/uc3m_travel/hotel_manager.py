@@ -6,7 +6,7 @@ import hashlib
 from luhn import verify
 import sys
 
-sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_management_exception import hotel_management_exception as hme
 from hotel_reservation import hotel_reservation as hr
@@ -20,7 +20,7 @@ class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __json_path = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def init(self):
         """
@@ -64,7 +64,7 @@ class hotel_manager:
             return False
 
         #verificar que no tiene dígitos
-        if not partesfecha[0].isdigit() or not partesfecha[1].isdigit() or not partesfecha[2].isdigit():
+        if not partesfecha[0].isdigit() or not partesfecha[1].isdigit():
             return False
         #verificar que máximo 31 días y mínimo 1
         dia = int(partesfecha[0])
@@ -74,10 +74,6 @@ class hotel_manager:
         # Verificar que el mes esté entre 1 y 12
         mes = int(partesfecha[1])
         if mes < 1 or mes > 12:
-            return False
-
-        # Verificar que no haya números en el año
-        if any(c.isdigit() for c in partesfecha[2]):
             return False
 
         #verificar febrero y días en función de si es bisiesto
@@ -181,14 +177,14 @@ class hotel_manager:
             raise hme("Número de días no válido")
         #Si hemos pasado todas las pruebas, tenemos datos correctos
         # Comprobamos que el cliente no tenga ya reservas
-        reservas = self.readDatafromjson(self.__json_path + r"\reservas.json", "r")
+        reservas = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
         for reserva in reservas:
             if reserva["id_card"] == id_card:
                 raise hme(
                     "There can´t be more than 1 reservation per client")
         # Creamos el localizador
         booking = hr(credit_card_number, id_card, name_and_surname,
-                     phone_number, room_type, num_days)
+                     phone_number, room_type, arrival, num_days)
         localizador = booking.localizer
         print("Localizador creado:", localizador)
 
@@ -207,3 +203,60 @@ class hotel_manager:
         self.writeDataToJson(self.__json_path + r"\reservas.json", reservas, "w")
         print("Reserva almacenada con éxito.")
         return localizador
+
+#################################################### FUNCION 2 ####################################################
+class HotelStay:
+    def _init_(self, alg, typ, localizer, idcard, arrival, departure, room_key):
+        self.alg = alg
+        self.typ = typ
+        self.localizer = localizer
+        self.idcard = idcard
+        self.arrival = arrival
+        self.departure = departure
+        self.room_key = room_key
+
+
+def guest_arrival(fichero_reservas):
+    try:
+        with open(fichero_reservas, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError as e:
+        raise hme.hotel_management_exception("Wrong file or file path") from e
+    except json.JSONDecodeError as e:
+        raise hme.hotel_management_exception("JSON Decode Error - Wrong JSON Format") from e
+    with open(fichero_reservas, 'r') as file:
+        data = json.load(file)
+
+    localizer = data.get('Localizer')
+
+    with open(fichero_reservas, 'r') as file:
+        reservations_data = file.read()
+
+    #comprobar que el localizador está en reservas
+    if localizer in reservations_data:
+        num_days = data.get('num_days')
+
+        #salida = llegada mas dias de estancia en segundos
+        arrival = datetime.utcnow().timestamp()
+        departure = arrival + (num_days * 86400)
+
+        room_key_data = {
+            "alg": "SHA-256",
+            "typ": "room_key",
+            "localizer": localizer,
+            "arrival": arrival,
+            "departure": departure
+        }
+        room_key_text = json.dumps(room_key_data, separators=(',', ':'))#Convertir a JSON sin espacios
+
+        # Calcula el SHA-256
+        room_key_hash = hashlib.sha256(room_key_text.encode()).hexdigest()
+
+        #guardamos el hash en un fichero
+        with open('hotel_stays.txt', 'a') as file:
+            file.write(f"Localizer: {localizer}, Room Key: {room_key_hash}\n")
+
+        return room_key_hash
+    else:
+        #el localizador no esta en reservas
+        raise hme.hotel_management_exception("El localizador de reserva no esta en el fichero de reservas")
