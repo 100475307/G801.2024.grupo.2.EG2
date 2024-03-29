@@ -4,19 +4,25 @@ clase hotel_manager
 import json
 import hashlib
 from luhn import verify
-import hotel_management_exception as hme
-import hotel_reservation
-from stdnum import es
+import sys
+
+sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+
+from hotel_management_exception import hotel_management_exception as hme
+from hotel_reservation import hotel_reservation as hr
+from hotel_stay import hotel_stay
+from stdnum.es import nif
 import re
 from datetime import datetime, timedelta
+
 
 class hotel_manager:
     """
     clase hotel_manager
     """
-    _json_path = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
-                     r"\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel\json_files")
-    def __init__(self):
+    __json_path = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+
+    def init(self):
         """
         hace pass del init
         """
@@ -28,152 +34,176 @@ class hotel_manager:
         """
         if not x.isdigit():
             return False
-        verify (x)
+        return verify(x)
 
     def validateidcard(self, x):
-        return es.dni.validate(x)
+        #Comprobamos la longitud del DNI
+        if len(x) != 9:
+            return False
+        #Verificar que está formado por 8 dígitos + 1 letra
+        if not x[:1].isdigit() or not x[-1].isalpha():
+            return False
+        #calculamos la letra esperada a partir de los números
+        letras_validas = "TRWAGMYFPDXBNJZSQVHLCKE"
+        dni_numeros = int(x[:-1])
+        letra_esperada = letras_validas[dni_numeros % 23]
+        #si no coincide la letra esperada con la obtenida, False
+        if x[-1].upper() != letra_esperada:
+            return False
+        return True
 
+    def es_bisiesto(self, ano):
+        return ano % 4 == 0 and (ano % 100 != 0 or ano % 400 == 0)
+    def validatearrival(self, x):
+        partesfecha = x.split('/')
+        #Si no solo contiene día, fecha y hora
+        if len(partesfecha) != 3:
+            return False
+        #si día o mes más de 2 dígitos y año más de 4
+        if len(partesfecha[0]) != 2 or len(partesfecha[1]) != 2 or len(partesfecha[2]) != 4:
+            return False
 
-    def read_data_from_json(self, fi):
+        #verificar que no tiene dígitos
+        if not partesfecha[0].isdigit() or not partesfecha[1].isdigit() or not partesfecha[2].isdigit():
+            return False
+        #verificar que máximo 31 días y mínimo 1
+        dia = int(partesfecha[0])
+        if dia < 1 or dia > 31:
+            return False
+
+        # Verificar que el mes esté entre 1 y 12
+        mes = int(partesfecha[1])
+        if mes < 1 or mes > 12:
+            return False
+
+        # Verificar que no haya números en el año
+        if any(c.isdigit() for c in partesfecha[2]):
+            return False
+
+        #verificar febrero y días en función de si es bisiesto
+        if mes == 2:
+            if self.es_bisiesto(int(partesfecha[2])):
+                if dia < 1 or dia > 29:
+                    return False
+            elif dia < 1 or dia > 28:
+                return False
+        #verifica que el mes tiene el número de días que corresponde
+        elif mes in [4, 6, 8, 11]:
+            if dia < 1 or dia > 30:
+                return False
+        return True
+
+    def validatenumdays(self, x):
+        # Verificar si el número es dígito y está entre 1 y 10
+        if x.isdigit():
+            numero = int(x)
+            if numero >= 1 and numero <= 10:
+                return True
+        return False
+
+    def read_data_from_json(self, fi, mode):
         """
         funcion leer datos de json
         """
         try:
-            with open(fi, "r", encoding="utf-8") as f:
+            with open(fi, encoding="UTF-8", mode=mode) as f:
                 data = json.load(f)
-        except FileNotFoundError as e:
-            raise hme.hotel_management_exception("Wrong file or file path") from e
-        except json.JSONDecodeError as e:
-            raise hme.hotel_management_exception("JSON Decode Error - Wrong JSON Format") from e
+        except FileNotFoundError: #en diapositivas, estas dos líneas !=
+            data = []
+        except json.JSONDecodeError:
+            data = []
+        return data
 
-
+    def writeDataToJson(self, fi, data, mode):
+        """write data to json file"""
         try:
-            c = data["credit_card_number"]
-            p = data["phoneNumber"]
-            req = hotel_reservation(id_card="12345678Z",credit_card_number=c,name_and_surname="John Doe",phone_number=p,room_type="single",num_days=3)
-        except KeyError as e:
-            raise hme.hotel_management_exception("JSON Decode Error - Invalid JSON Key") from e
-        if not self.validatecreditcard(c):
-            raise hme.hotel_management_exception("Invalid credit card number")
-
-        # Close the file
-        return req
+            with open(fi, encoding='UTF-8', mode=mode) as f:
+                json.dump(data, f, indent=4)
+        except FileNotFoundError as e:
+            raise hme("Wrong file or file path") from e
+        except json.JSONDecodeError as e:
+            raise hme("JSON Decode Error - Wrong JSON Format") from e
+        return data
 
     def room_reservation(self, credit_card_number, id_card, name_and_surname, phone_number, room_type, arrival, num_days):
-        """Devuelve una cadena que representa HM-FR-01-O1
-        En caso de errores, devuelve una hotel_management_exception representa HM-FR-01-O2"""
-        # Verificar HM-FR-01-I1: Número de tarjeta de crédito válido
+        '''Room Reservation'''
         if not self.validatecreditcard(credit_card_number):
-            print("ENTRA EN CREDIT CARD")
-            raise hme.hotel_management_exception("Invalid credit card number provided")
-
-        # Verificar HM-FR-01-I2: DNI válido
+            raise hme(
+                "Tarjeta erronea. No cumple con el algoritmo de Luhn")
+        if len(credit_card_number) > 16:
+            raise hme(
+                "Tarjeta erronea. Más de 16 dígitos")
+        if len(credit_card_number) < 16:
+            raise hme(
+                "Tarjeta erronea. Menos de 16 dígitos")
+        if not credit_card_number.isdigit():
+            raise hme(
+                "Tarjeta erronea. Contiene letras")
         if not self.validateidcard(id_card):
-            raise hme.hotel_management_exception("Invalid identification number")
+            raise hme(
+                "DNI erróneo")
+        if len(name_and_surname) > 50:
+            raise hme(
+                "Nombre y/o apellido erróneos. Más de 50 caracteres")
+        if len(name_and_surname) < 10:
+            raise hme(
+                "Nombre y/o apellido erróneos. Menos de 10 caracteres")
+        if len(name_and_surname.split()) <2:
+            raise hme(
+                "Nombre y apellidos erroneos. Tiene que tener al menos un nombre y un apellido")
 
-        # Verificar HM-FR-01-I3: Nombre y apellidos válidos
-        if len(name_and_surname.split()) < 2 or len(name_and_surname) < 10 or len(name_and_surname) > 50:
-            raise hme.hotel_management_exception("Invalid name and surname")
+        if name_and_surname.startswith(' ') or name_and_surname.startswith(' '):
+            raise hme(
+                "Nombre y/o apellido erróneos. No puede empezar ni terminar por espacio")
 
-        # Verificar HM-FR-01-I4: Número de teléfono válido
-        if not phone_number.isdigit() or len(phone_number) != 9:
-            raise hme.hotel_management_exception("Invalid phone number")
+        if '  ' in name_and_surname:
+            raise hme(
+                "Nombre y/o apellido erróneos. No puede usar dos espacios consecutivos")
 
-        # Verificar HM-FR-01-I5: Tipo de habitación válido
+        if len(phone_number) > 9:
+            raise hme(
+                "Número de teléfono erróneo. Más de 9 números")
+        if len(phone_number) < 9:
+            raise hme(
+                "Número de teléfono erróneo. Menos de 9 números")
+        if not phone_number.isdigit():
+            raise hme(
+                "Número de teléfono erróneo. Contiene letras")
+
         if room_type not in {'single', 'double', 'suite'}:
-            raise hme.hotel_management_exception("Invalid room type")
+            raise hme(
+                "Tipo de habitación errónea")
 
-        # Verificar HM-FR-01-I6: Formato de fecha de llegada válido
-        try:
-            datetime.strptime(arrival, '%d/%m/%Y')
-        except ValueError:
-            raise hme.hotel_management_exception("HM-FR-01-I6: Formato de fecha de llegada inválido")
+        if not self.validatearrival(arrival):
+            raise hme("Fecha de llegada errónea")
 
-        # Verificar HM-FR-01-I7: Número de noches válido
-        try:
-            num_days = int(num_days)
-            if num_days < 1 or num_days > 10:
-                raise ValueError
-        except ValueError:
-            raise hme.hotel_management_exception("HM-FR-01-I7: Número de noches inválido")
-
-
-        # hemos pasado las pruebas por lo que datos correctos
-        # añadimos información al fichero json
-        reserva = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
-        for i in reserva:
+        if not self.validatenumdays(num_days):
+            raise hme("Número de días no válido")
+        #Si hemos pasado todas las pruebas, tenemos datos correctos
+        # Comprobamos que el cliente no tenga ya reservas
+        reservas = self.readDatafromjson(self.__json_path + r"\reservas.json", "r")
+        for reserva in reservas:
             if reserva["id_card"] == id_card:
-                raise hme.hotel_management_exception("No puede haber más de una reserva por cliente")
-
-        booking = hotel_reservation(credit_card_number, id_card, name_and_surname, phone_number, room_type, arrival, num_days)
+                raise hme(
+                    "There can´t be more than 1 reservation per client")
+        # Creamos el localizador
+        booking = hr(credit_card_number, id_card, name_and_surname,
+                     phone_number, room_type, num_days)
         localizador = booking.localizer
+        print("Localizador creado:", localizador)
 
-        print("localizador", localizador)
-
-
-        #almacenamos los datos de la reserva en el json de reservas
-        pedido = {"credit_card_number": credit_card_number, "id_card": id_card, "name_and_surname": name_and_surname, "phone_number": phone_number, "room_type": room_type, "arrival": arrival, "num_days": num_days, "localizador": localizador}
-        reserva.append(pedido)
-        self.read_data_from_json(self.__json_path + r"\reservas.json")
-
-
-        # Todo está correcto, se puede proceder con la reserva
-        print("Reserva realizada exitosamente.")
-        return localizador
-
-#######################     FUNCION 2      ###################################################
-class HotelStay:
-    def __init__(self, alg, typ, localizer, idcard, arrival, departure, room_key):
-        self.alg = alg
-        self.typ = typ
-        self.localizer = localizer
-        self.idcard = idcard
-        self.arrival = arrival
-        self.departure = departure
-        self.room_key = room_key
-
-
-def guest_arrival(fichero_reservas):
-    try:
-        with open(fichero_reservas, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except FileNotFoundError as e:
-        raise hme.hotel_management_exception("Wrong file or file path") from e
-    except json.JSONDecodeError as e:
-        raise hme.hotel_management_exception("JSON Decode Error - Wrong JSON Format") from e
-    with open(fichero_reservas, 'r') as file:
-        data = json.load(file)
-
-    localizer = data.get('Localizer')
-
-    with open(fichero_reservas, 'r') as file:
-        reservations_data = file.read()
-
-    #comprobar que el localizador está en reservas
-    if localizer in reservations_data:
-        num_days = data.get('num_days')
-
-        #salida = llegada mas dias de estancia en segundos
-        arrival = datetime.utcnow().timestamp()
-        departure = arrival + (num_days * 86400)
-
-        room_key_data = {
-            "alg": "SHA-256",
-            "typ": "room_key",
-            "localizer": localizer,
+        # Almacenar los datos de la reserva en el archivo
+        reserva_actual = {
+            "credit_card_number": credit_card_number,
+            "id_card": id_card,
+            "name_and_surname": name_and_surname,
+            "phoneNumber": phone_number,
+            "roomType": room_type,
             "arrival": arrival,
-            "departure": departure
+            "numDays": num_days,
+            "localizador": localizador
         }
-        room_key_text = json.dumps(room_key_data, separators=(',', ':'))#Convertir a JSON sin espacios
-
-        # Calcula el SHA-256
-        room_key_hash = hashlib.sha256(room_key_text.encode()).hexdigest()
-
-        #guardamos el hash en un fichero
-        with open('hotel_stays.txt', 'a') as file:
-            file.write(f"Localizer: {localizer}, Room Key: {room_key_hash}\n")
-
-        return room_key_hash
-    else:
-        #el localizador no esta en reservas
-        raise hme.hotel_management_exception("El localizador de reserva no esta en el fichero de reservas")
+        reservas.append(reserva_actual)
+        self.writeDataToJson(self.__json_path + r"\reservas.json", reservas, "w")
+        print("Reserva almacenada con éxito.")
+        return localizador

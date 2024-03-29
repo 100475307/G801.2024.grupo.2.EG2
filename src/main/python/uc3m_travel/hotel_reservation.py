@@ -8,7 +8,7 @@ class hotel_reservation:
     """
     clase hotel_reservation
     """
-    def __init__(self, id_card, credit_card_numb, name_and_surname, phone_number, room_type,num_days):
+    def __init__(self, id_card, credit_card_numb, name_and_surname, phone_number, room_type, arrival_date, num_days):
         """
         funcion init
         """

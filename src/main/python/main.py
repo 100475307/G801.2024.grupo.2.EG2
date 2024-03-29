@@ -5,6 +5,7 @@ clase principal, main
 # IN GUIDED EXERCISE 2.2, TESTING MUST BE PERFORMED USING UNITTESTS.
 
 from src.main.python.uc3m_travel import hotel_manager
+from src.main.python.uc3m_travel.hotel_reservation import hotel_reservation
 
 
 def main():
