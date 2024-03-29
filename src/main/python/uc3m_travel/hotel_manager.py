@@ -6,7 +6,7 @@ import hashlib
 from luhn import verify
 import sys
 
-sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_management_exception import hotel_management_exception as hme
 from hotel_reservation import hotel_reservation as hr
@@ -20,7 +20,7 @@ class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __json_path = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def init(self):
         """
@@ -186,6 +186,8 @@ class hotel_manager:
         booking = hr(credit_card_number, id_card, name_and_surname,
                      phone_number, room_type, arrival, num_days)
         localizador = booking.localizer
+
+        print("DATOOOOS: ", credit_card_number, id_card, name_and_surname, phone_number, room_type, arrival, num_days)
         print("Localizador creado:", localizador)
 
         # Almacenar los datos de la reserva en el archivo

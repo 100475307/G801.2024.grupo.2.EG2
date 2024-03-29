@@ -4,19 +4,21 @@ clase hotel_reservation
 import hashlib
 from datetime import datetime
 
+
 class hotel_reservation:
     """
     clase hotel_reservation
     """
-    def __init__(self, id_card, credit_card_numb, name_and_surname, phone_number, room_type, arrival_date, num_days):
+    def __init__(self, id_card, credit_card_numb, name_and_surname, phone_number, room_type, arrival, num_days):
         """
         funcion init
         """
         self.__credit_card_number = credit_card_numb
         self.__id_card = id_card
         justnow = datetime.utcnow()
-        self.__arrival = datetime.timestamp(justnow)
-        self.__name_surname = name_and_surname
+        self.__today = datetime.timestamp(justnow)
+        self.__arrival = arrival
+        self.__name_and_surname = name_and_surname
         self.__phone_number = phone_number
         self.__room_type = room_type
         self.__num_days = num_days
@@ -24,13 +26,13 @@ class hotel_reservation:
     def __str__(self):
         """return a json string with the elements required to calculate the localizer"""
         #VERY IMPORTANT: JSON KEYS CANNOT BE RENAMED
-        jsonInfo = {"id_card": self.__id_card,
-                     "name_surname": self.__name_surname,
-                     "credit_card": self.__credit_card_number,
+        jsonInfo = {"credit_card": self.__credit_card_number,
+                    "id_card": self.__id_card,
+                     "name_and_surname": self.__name_and_surname,
                      "phone_number:": self.__phone_number,
-                     "arrival_date": self.__arrival,
+                    "room_type": self.__room_type,
+                    "arrival": self.__arrival,
                      "num_days": self.__num_days,
-                     "room_type": self.__room_type,
                      }
         return "HotelReservation:" + jsonInfo.__str__()
     @property
@@ -63,4 +65,6 @@ class hotel_reservation:
     @property
     def localizer( self ):
         """Returns the md5 signature"""
+        print("HUSHHHH: ", str(self))
+        print("LOCALIZADOR: ", hashlib.md5(str(self).encode()).hexdigest())
         return hashlib.md5(str(self).encode()).hexdigest()
