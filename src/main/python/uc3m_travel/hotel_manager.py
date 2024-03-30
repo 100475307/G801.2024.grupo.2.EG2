@@ -239,7 +239,31 @@ def guest_arrival(fichero_reservas):
         with open(fichero_reservas, "r", encoding="utf-8") as f:
             data = json.load(f)
         for elemento in fichero_reservas:
-            validate(instance=data, schema=esquema)
+            if 'Localizer' not in elemento:
+                raise hme.hotel_management_exception("Etiqueta 1 nulo")
+            if 'IdCard' not in elemento:
+                raise hme.hotel_management_exception("Etiqueta 2 nulo")
+            if not elemento['Localizer']:
+                raise hme.hotel_management_exception("Valor etiqueta 1 nulo")
+            if not elemento['IdCard']:
+                raise hme.hotel_management_exception("Valor etiqueta 2 nulo")
+            if len(elemento['Localizar']) != 32:
+                raise hme.hotel_management_exception("Longitud del valor de la etiqueta 1 incorrecto")
+            if len(elemento['IdCard']) != 9:
+                raise hme.hotel_management_exception("Longitud del valor de la etiqueta 2 incorrecto")
+            if not elemento['Localizer'].isalnum():
+                raise hme.hotel_management_exception("Formato del valor de la etiqueta 1 incorrecto")
+            if not elemento['IdCard']:
+                raise hme.hotel_management_exception("Formato del valor de la etiqueta 2 incorrecto")
+            if not elemento['IdCard'][:8].isdigit() or not elemento['IdCard'][8].isalpha():
+                raise hme.hotel_management_exception(
+                    "Los primeros 8 caracteres del campo 'Localizer' deben ser números y el último una letra.")
+
+            try:
+                validate(instance=data, schema=esquema)
+            except ValidationError as e:
+                raise hme.hotel_management_exception("Formato del archivo JSON incorrecto") from e
+
     except FileNotFoundError as e:
         raise hme.hotel_management_exception("Wrong file or file path") from e
     except json.JSONDecodeError as e:
