@@ -5,8 +5,10 @@ import json
 import hashlib
 from luhn import verify
 import sys
+import json
+from jsonschema import validate, ValidationError
 
-sys.path.append(r'C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_management_exception import hotel_management_exception as hme
 from hotel_reservation import hotel_reservation as hr
@@ -20,7 +22,7 @@ class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __json_path = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def init(self):
         """
@@ -223,9 +225,21 @@ class HotelStay:
 
 
 def guest_arrival(fichero_reservas):
+    #esquema correcto para los archivos json
+    esquema = {
+        "type": "object",
+        "properties": {
+            "Localizer": {"type": "string"},
+            "IdCard": {"type": "string"}
+        },
+        "required": ["Localizer", "IdCard"]
+    }
+
     try:
         with open(fichero_reservas, "r", encoding="utf-8") as f:
             data = json.load(f)
+        for elemento in fichero_reservas:
+            validate(instance=data, schema=esquema)
     except FileNotFoundError as e:
         raise hme.hotel_management_exception("Wrong file or file path") from e
     except json.JSONDecodeError as e:
