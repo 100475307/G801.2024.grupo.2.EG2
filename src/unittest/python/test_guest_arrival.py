@@ -55,7 +55,7 @@ class test_guest_arrival(TestCase):
                     if test_id == "TC1":
                         self.assertEqual(room_key, ({"Localizer":"123456789ABCDEF1234567890ABCEDF1","IdCard": "53994572A"}))
     def test_reservation_KO(self):
-        """Casos de test incorrectos"""
+        """Casos de test incorrectoss"""
         for index, input_data in enumerate(self.__test_data_f2):
             if index + 1 in [9,12,13,16,19,20]:
                 test_id = "TC" + str(index + 1)
