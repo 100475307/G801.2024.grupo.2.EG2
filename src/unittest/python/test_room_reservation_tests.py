@@ -5,7 +5,7 @@ from unittest import TestCase
 import sys
 
 sys.path.append(
-    r'C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+    r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_manager import hotel_manager
 from hotel_management_exception import hotel_management_exception
@@ -14,9 +14,9 @@ from hotel_management_exception import hotel_management_exception
 class TestRoomReservation(TestCase):
     """Clase para crear los test de prueba de la funcion 1: Room Reservation"""
     __path_tests = str(
-        r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     __path_data = str(
-        r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     @classmethod
     def setUp(cls):

@@ -126,7 +126,7 @@ class hotel_manager:
         '''Room Reservation'''
         if not self.validatecreditcard(credit_card_number):
             print("PASA POR AQUIIII")
-            raise hme(
+            return(
                 "Tarjeta erronea. No cumple con el algoritmo de Luhn")
         if len(credit_card_number) > 16:
             raise hme(
@@ -186,7 +186,7 @@ class hotel_manager:
         for reserva in reservas:
             if reserva["id_card"] == id_card:
                 raise hme(
-                    "No puede haber más de una reserva por cliente")
+                    "There can´t be more than 1 reservation per client")
         # Creamos el localizador
         booking = hr(credit_card_number, id_card, name_and_surname,
                      phone_number, room_type, arrival, num_days)
@@ -351,51 +351,58 @@ class hotel_manager:
 
 
 #################################################### FUNCION 2 ####################################################
+class HotelStay:
+    def _init_(self, alg, typ, localizer, idcard, arrival, departure, room_key):
+        self.alg = alg
+        self.typ = typ
+        self.localizer = localizer
+        self.idcard = idcard
+        self.arrival = arrival
+        self.departure = departure
+        self.room_key = room_key
 
 
-"""
-    def guest_arrival(self, fichero_reservas):
-        try:
-            with open(fichero_reservas, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except FileNotFoundError as e:
-            raise hme("Wrong file or file path") from e
-        except json.JSONDecodeError as e:
-            raise hme("JSON Decode Error - Wrong JSON Format") from e
-        with open(fichero_reservas, 'r') as file:
-            data = json.load(file)
+def guest_arrival(fichero_reservas):
+    try:
+        with open(fichero_reservas, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError as e:
+        raise hme.hotel_management_exception("Wrong file or file path") from e
+    except json.JSONDecodeError as e:
+        raise hme.hotel_management_exception("JSON Decode Error - Wrong JSON Format") from e
+    with open(fichero_reservas, 'r') as file:
+        data = json.load(file)
 
-        localizer = data.get('Localizer')
+    localizer = data.get('Localizer')
 
-        with open(fichero_reservas, 'r') as file:
-            reservations_data = file.read()
+    with open(fichero_reservas, 'r') as file:
+        reservations_data = file.read()
 
-        #comprobar que el localizador está en reservas
-        if localizer in reservations_data:
-            num_days = data.get('num_days')
+    #comprobar que el localizador está en reservas
+    if localizer in reservations_data:
+        num_days = data.get('num_days')
 
-            #salida = llegada mas dias de estancia en segundos
-            arrival = datetime.utcnow().timestamp()
-            departure = arrival + (num_days * 86400)
+        #salida = llegada mas dias de estancia en segundos
+        arrival = datetime.utcnow().timestamp()
+        departure = arrival + (num_days * 86400)
 
-            room_key_data = {
-                "alg": "SHA-256",
-                "typ": "room_key",
-                "localizer": localizer,
-                "arrival": arrival,
-                "departure": departure
-            }
-            room_key_text = json.dumps(room_key_data, separators=(',', ':'))#Convertir a JSON sin espacios
+        room_key_data = {
+            "alg": "SHA-256",
+            "typ": "room_key",
+            "localizer": localizer,
+            "arrival": arrival,
+            "departure": departure
+        }
+        room_key_text = json.dumps(room_key_data, separators=(',', ':'))#Convertir a JSON sin espacios
 
-            # Calcula el SHA-256
-            room_key_hash = hashlib.sha256(room_key_text.encode()).hexdigest()
+        # Calcula el SHA-256
+        room_key_hash = hashlib.sha256(room_key_text.encode()).hexdigest()
 
-            #guardamos el hash en un fichero
-            with open('hotel_stays.txt', 'a') as file:
-                file.write(f"Localizer: {localizer}, Room Key: {room_key_hash}\n")
+        #guardamos el hash en un fichero
+        with open('hotel_stays.txt', 'a') as file:
+            file.write(f"Localizer: {localizer}, Room Key: {room_key_hash}\n")
 
-            return room_key_hash
-        else:
-            #el localizador no esta en reservas
-            raise hme("El localizador de reserva no esta en el fichero de reservas")
-"""
+        return room_key_hash
+    else:
+        #el localizador no esta en reservas
+        raise hme("El localizador de reserva no esta en el fichero de reservas")
