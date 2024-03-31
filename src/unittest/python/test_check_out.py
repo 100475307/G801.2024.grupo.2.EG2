@@ -9,9 +9,10 @@ sys.path.append(
 
 from src.main.python.uc3m_travel.hotel_manager import hotel_manager
 from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
+from src.main.python.uc3m_travel.hotel_stay import hotel_stay
 
 
-class testCheckOut(TestCase):
+class test_check_out(TestCase):
     """Clase para crear los test de prueba de la funcion 1: Room Reservation"""
     __path_tests = str(
         r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
@@ -33,9 +34,9 @@ class testCheckOut(TestCase):
             testscheckout = []
         cls.__test_check_out = testscheckout
         # cerramos el fichero de checkouts
-        ficheroCheckOut = cls.__path_data + r"/checkouts.json"
-        if os.path.isfile(ficheroCheckOut):
-            os.remove(ficheroCheckOut)
+        ficherocheckout = cls.__path_data + r"/checkouts.json"
+        if os.path.isfile(ficherocheckout):
+            os.remove(ficherocheckout)
 
     def test_check_outs_ok(self):
         """Tests función 1 que se esperan correctos"""
@@ -65,7 +66,7 @@ class testCheckOut(TestCase):
                     # solucionar error si no se trata de una lista de diccionarios
                     checkout = [checkout]
                 for c in checkout:
-                    if checkout["room_key"] == inputData["room_key"]:
+                    if c["room_key"] == inputData["room_key"]:
                         encontradocheckout = True
                 self.assertTrue(encontradocheckout)
 
@@ -106,3 +107,32 @@ class testCheckOut(TestCase):
                             print("entra en test6 ****")
                             self.assertEqual(result.exception.message,
                                              "La persona ya ha hecho checkout hoy")
+
+
+    def test_guest_departure(self, mock_datetime):
+        # definimos la fecha de entrada
+        mock_datetime.utcnow.return_value = datetime(2020, 12, 1)
+        # definimos la fecha de salida
+        mock_datetime.timestamp.return_value = 1606780800
+        # creamos una instancia de hotel_manager
+        hm = hotel_manager()
+        # creamos una instancia de hotel_stay y le damos los datos del primer caso de prueba del
+        # fichero hotel_stays.json, leido en setUp() como file
+        try:
+            with open(cls.__path_tests, "r") as file:
+                cls.data = json.load(file)
+        except FileNotFoundError:
+            print("File not found")
+        hs1 = hotel_stay(cls.data[0]["id_card"], cls.data[0]["localizer"],
+                         cls.data[0]["num_days"], cls.data[0]["room_type"])
+        hs2 = hotel_stay(cls.data[1]["id_card"], cls.data[1]["localizer"],
+                         cls.data[1]["num_days"], cls.data[1]["room_type"])
+
+        # probamos para los dos, la función guest_departure(room_key) con la room_key correcta
+        # y comprobamos que la salida es la esperada
+        self.assertEqual(hm.guest_departure(hs1.room_key), "OK")
+        self.assertEqual(hm.guest_departure(hs2.room_key), "ERROR")
+
+
+if _name_ == '_main_':
+    unittest.main()

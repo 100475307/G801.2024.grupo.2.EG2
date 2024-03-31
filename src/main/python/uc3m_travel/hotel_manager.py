@@ -3,18 +3,16 @@ clase hotel_manager
 """
 import json
 import hashlib
-from luhn import verify
+from datetime import datetime, timedelta
+import re
 import sys
+from jsonschema import validate, ValidationError
+from luhn import verify
 
 sys.path.append(r'C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_management_exception import hotel_management_exception as hme
 from hotel_reservation import hotel_reservation as hr
-from hotel_stay import hotel_stay
-from stdnum.es import nif
-import re
-from datetime import datetime, timedelta
-from jsonschema import validate, ValidationError
 
 
 class hotel_manager:
@@ -27,7 +25,7 @@ class hotel_manager:
         """
         hace pass del init
         """
-        pass
+
 
     def validatecreditcard(self, x):
         """
@@ -45,11 +43,11 @@ class hotel_manager:
         if not x[:1].isdigit() or not x[-1].isalpha():
             return False
         #calculamos la letra esperada a partir de los números
-        letras_validas = "TRWAGMYFPDXBNJZSQVHLCKE"
-        dni_numeros = int(x[:-1])
-        letra_esperada = letras_validas[dni_numeros % 23]
+        letrasValidas = "TRWAGMYFPDXBNJZSQVHLCKE"
+        dniNumeros = int(x[:-1])
+        letraEsperada = letrasValidas[dniNumeros % 23]
         #si no coincide la letra esperada con la obtenida, False
-        if x[-1].upper() != letra_esperada:
+        if x[-1].upper() != letraEsperada:
             return False
         return True
 
@@ -111,7 +109,7 @@ class hotel_manager:
             data = []
         return data
 
-    def writeDataToJson(self, fi, data, mode):
+    def write_data_to_json(self, fi, data, mode):
         """write data to json file"""
         try:
             with open(fi, encoding='UTF-8', mode=mode) as f:
@@ -196,7 +194,7 @@ class hotel_manager:
         print("Localizador creado:", localizador)
 
         # Almacenar los datos de la reserva en el archivo
-        reserva_actual = {
+        reservaActual = {
             "credit_card_number": credit_card_number,
             "id_card": id_card,
             "name_and_surname": name_and_surname,
@@ -206,8 +204,8 @@ class hotel_manager:
             "numDays": num_days,
             "localizador": localizador
         }
-        reservas.append(reserva_actual)
-        self.writeDataToJson(self.__json_path + r"\reservas.json", reservas, "w")
+        reservas.append(reservaActual)
+        self.write_data_to_json(self.__json_path + r"\reservas.json", reservas, "w")
         print("Reserva almacenada con éxito.")
         return localizador
 
@@ -261,49 +259,45 @@ class hotel_manager:
         localizer = data.get('Localizer')
 
         with open(fichero_reservas, 'r') as file:
-            reservations_data = file.read()
+            reservationsData = file.read()
 
         # comprobar que el localizador está en reservas
-        if localizer in reservations_data:
-            num_days = data.get('num_days')
+        if localizer in reservationsData:
+            numDays = data.get('num_days')
 
             # salida = llegada mas dias de estancia en segundos
             arrival = datetime.utcnow().timestamp()
-            departure = arrival + (num_days * 86400)
+            departure = arrival + (numDays * 86400)
 
-            room_key_data = {
+            roomKeyData = {
                 "alg": "SHA-256",
                 "typ": "room_key",
                 "localizer": localizer,
                 "arrival": arrival,
                 "departure": departure
             }
-            room_key_text = json.dumps(room_key_data, separators=(',', ':'))  # Convertir a JSON sin espacios
+            roomKeyText = json.dumps(roomKeyData, separators=(',', ':'))  # Convertir a JSON sin espacios
 
             # Calcula el SHA-256
-            room_key_hash = hashlib.sha256(room_key_text.encode()).hexdigest()
+            roomKeyHash = hashlib.sha256(roomKeyText.encode()).hexdigest()
 
             # guardamos el hash en un fichero
             with open('hotel_stays.txt', 'a') as file:
-                file.write(f"Localizer: {localizer}, Room Key: {room_key_hash}\n")
+                file.write(f"Localizer: {localizer}, Room Key: {roomKeyHash}\n")
 
-            return room_key_hash
+            return roomKeyHash
+
         else:
             # el localizador no esta en reservas
-            raise hme("El localizador de reserva no esta en el fichero de reservas")
+            raise hme("El localizador de reserva no esta en el fichero de reservas")
 
     def guest_departure(self, room_key):
-        # chequear que el fichero "hotel_stays.json" existe y no esté vacío mediante las funciones read_data_from_json y writeDataToJson
-        # utiliza "read_data_from_json" para leer el archivo de estancia
-        # utiliza "writeDataToJson" para escribir en el archivo de checkouts
         checkouts = self.read_data_from_json(self.__json_path + r"\hotel_stays.json", "r")
         if not checkouts:
             raise hme("No hay datos de estancias")
 
-
-        # Validar los datos de entrada
-        if not re.match(r"^[a-fA-F0-9]{64}$",
-                        room_key):  # Comprueba que el código de la llave de la habitación (room_key) esté en un formato correcto, en este caso que sea una cadena SHA256 en formato hexadecimal
+        # Comprueba que el room_key esté en un formato correcto
+        if not re.match(r"^[a-fA-F0-9]{64}$", room_key):
             raise hme("Código de habitación no cumple con el formato correcto")
 
         # Para cada entrada de chechout, miramos si la llave de la habitación coincide con la que se ha pasado como argumento
@@ -344,7 +338,6 @@ class hotel_manager:
         }
         if checkoutactual not in checkouts2:
             checkouts2.append(checkoutactual)
-        self.writeDataToJson(self.__json_path + r"\checkouts.json", checkouts2, "w")
+        self.write_data_to_json(self.__json_path + r"\checkouts.json", checkouts2, "w")
 
         return "Salida registrada con éxito"
-
