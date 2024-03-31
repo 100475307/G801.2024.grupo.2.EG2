@@ -12,12 +12,9 @@ import os.path
 import hashlib
 class test_guest_arrival(TestCase):
     """clase para los test de la función 2"""
-    __path_tests = str(r"C:\Users\ghija\PycharmProjects"
-                       r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
-    __path_tests2 = str(r"C:\Users\ghija\PycharmProjects"
-                       r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
-    __path_data = str(r"C:\Users\ghija\PycharmProjects"
-                      r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_tests = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_tests2 = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_data = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def setUp(self):
         """funcion setUp"""
@@ -33,6 +30,7 @@ class test_guest_arrival(TestCase):
         fichero_reservas = self.__path_data + r"\reservas.json"
         if os.path.isfile(fichero_reservas):
             os.remove(fichero_reservas)
+        self.__test_data_f2 = [room['data'] for room in self.__test_room_reservation]
 
     def get_store_hash(self):
         """gets md5 hash for the stay store"""
