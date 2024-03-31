@@ -300,6 +300,7 @@ class hotel_manager:
         if not checkouts:
             raise hme("No hay datos de estancias")
 
+
         # Validar los datos de entrada
         if not re.match(r"^[a-fA-F0-9]{64}$",
                         room_key):  # Comprueba que el código de la llave de la habitación (room_key) esté en un formato correcto, en este caso que sea una cadena SHA256 en formato hexadecimal
