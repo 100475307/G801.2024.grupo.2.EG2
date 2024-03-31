@@ -2,7 +2,7 @@
 clase hotel_reservation
 """
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class hotel_reservation:
@@ -15,7 +15,7 @@ class hotel_reservation:
         """
         self.__credit_card_number = credit_card_numb
         self.__id_card = id_card
-        justnow = datetime.utcnow()
+        justnow = datetime.now(timezone.utc)
         self.__today = datetime.timestamp(justnow)
         self.__arrival = arrival
         self.__name_and_surname = name_and_surname
