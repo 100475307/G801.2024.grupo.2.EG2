@@ -131,7 +131,7 @@ class test_room_reservation(TestCase):
                     elif inputData["id_test"] == "TC10":
                         print("entra en test10 ****")
                         self.assertEqual(result.exception.message,
-                                         "Tarjeta erronea. Contiene letras")
+                                         "Nombre y/o apellido erróneos. Contiene letras")
                     elif inputData["id_test"] == "TC11":
                         print("entra en test11 ****")
                         self.assertEqual(result.exception.message,

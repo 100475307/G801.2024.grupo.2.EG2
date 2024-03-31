@@ -122,10 +122,6 @@ class hotel_manager:
 
     def room_reservation(self, credit_card_number, id_card, name_and_surname, phone_number, room_type, arrival, num_days):
         '''Room Reservation'''
-        if not self.validatecreditcard(credit_card_number):
-            print("PASA POR AQUIIII")
-            raise hme(
-                "Tarjeta erronea. No cumple con el algoritmo de Luhn")
         if len(credit_card_number) > 16:
             raise hme(
                 "Tarjeta erronea. Más de 16 dígitos")
@@ -135,18 +131,25 @@ class hotel_manager:
         if not credit_card_number.isdigit():
             raise hme(
                 "Tarjeta erronea. Contiene letras")
+        if not self.validatecreditcard(credit_card_number):
+            print("PASA POR AQUIIII")
+            raise hme(
+                "Tarjeta erronea. No cumple con el algoritmo de Luhn")
+
         if not self.validateidcard(id_card):
             raise hme(
                 "DNI erróneo")
+
+        if len(name_and_surname.split()) <2:
+            raise hme(
+                "Nombre y apellidos erroneos. Tiene que tener al menos un nombre y un apellido")
+
         if len(name_and_surname) > 50:
             raise hme(
                 "Nombre y/o apellido erróneos. Más de 50 caracteres")
         if len(name_and_surname) < 10:
             raise hme(
                 "Nombre y/o apellido erróneos. Menos de 10 caracteres")
-        if len(name_and_surname.split()) <2:
-            raise hme(
-                "Nombre y apellidos erroneos. Tiene que tener al menos un nombre y un apellido")
 
         if name_and_surname.startswith(' ') or name_and_surname.startswith(' '):
             raise hme(
