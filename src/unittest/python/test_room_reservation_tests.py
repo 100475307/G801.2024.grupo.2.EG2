@@ -1,11 +1,11 @@
-"""Fichero para incluir los casos de pruebas"""
+"""Fichero para incluir los casos de pruebas de la funcion 1"""
 import json
 import os.path
 from unittest import TestCase
 import sys
 
 sys.path.append(
-    r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+    r'C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_manager import hotel_manager
 from hotel_management_exception import hotel_management_exception
@@ -14,9 +14,11 @@ from hotel_management_exception import hotel_management_exception
 class TestRoomReservation(TestCase):
     """Clase para crear los test de prueba de la funcion 1: Room Reservation"""
     __path_tests = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
+        r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
     __path_data = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
+        r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     @classmethod
     def setUp(cls):
@@ -112,7 +114,9 @@ class TestRoomReservation(TestCase):
                                             inputData["room_type"],
                                             inputData["arrival"],
                                             inputData["num_days"])
-                        print("credit_card_number", inputData["credit_card_number"], "id_card", inputData["id_card"], inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"], inputData["arrival"], inputData["num_days"])
+                        print("credit_card_number", inputData["credit_card_number"], "id_card", inputData["id_card"],
+                              inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"],
+                              inputData["arrival"], inputData["num_days"])
                         if inputData["id_test"] == "TC2":
                             print("entra en test2 ****")
                             self.assertEqual(result.exception.message,
@@ -203,6 +207,7 @@ class TestRoomReservation(TestCase):
                             self.assertEqual(result.exception.message,
                                              "Nombre y/o apellido erróneos. No puede empezar ni terminar por espacio")
                         elif inputData["id_test"] == "TC37":
-                            self.assertEqual(result.exception.message, "Invalid name and surname, no trailing spaces allowed")
+                            self.assertEqual(result.exception.message,
+                                             "Invalid name and surname, no trailing spaces allowed")
                         elif inputData["id_test"] == "TC38":
                             self.assertEqual(result.exception.message, "No more than one reservation per client")
