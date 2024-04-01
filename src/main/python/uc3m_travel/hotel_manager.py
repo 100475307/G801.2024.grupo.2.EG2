@@ -9,10 +9,11 @@ import re
 import sys
 from jsonschema import validate, ValidationError
 from luhn import verify
+from stdnum.es import nif
 
 from src.main.python.uc3m_travel.hotel_stay import hotel_stay
 
-sys.path.append(r'C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_management_exception import hotel_management_exception as hme
 from hotel_reservation import hotel_reservation as hr
@@ -22,7 +23,7 @@ class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
+    __json_path = str(r"C:\Users\ghija\PycharmProjects"
         r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
     def init(self):
         """
@@ -163,7 +164,7 @@ class hotel_manager:
                 "Nombre y/o apellido erróneos. No puede usar dos espacios consecutivos")
 
         if not all(caracter.isalpha() or caracter.isspace() for caracter in name_and_surname):
-            raise hme("Nombre y/o apellido erróneos. Contiene letras")
+            raise hme("Nombre y/o apellido erróneos. Contiene letras")
 
         if len(phone_number) > 9:
             raise hme(
@@ -234,71 +235,67 @@ class hotel_manager:
                 data = json.load(f)
             if not data:
                 raise hme("El archivo está vacío")
-            for elemento in data:
-                if 'Localizer' not in elemento:
-                    raise hme("Etiqueta 1 nulo")
-                if 'id_card' not in elemento:
-                    raise hme("Etiqueta 2 nulo")
-                if not elemento['localizer']:
-                    raise hme("Valor etiqueta 1 nulo")
-                if not elemento['id_card']:
-                    raise hme("Valor etiqueta 2 nulo")
-                if len(elemento['localizar']) != 32:
-                    raise hme("Longitud del valor de la etiqueta 1 incorrecto")
-                if len(elemento['id_card']) != 9:
-                    raise hme("Longitud del valor de la etiqueta 2 incorrecto")
-                if not elemento['localizer'].isalnum():
-                    raise hme("Formato del valor de la etiqueta 1 incorrecto")
-                if not elemento['id_card']:
-                    raise hme("Formato del valor de la etiqueta 2 incorrecto")
-                if not self.validateidcard(elemento['id_card']):
-                    raise hme(
-                        "Los primeros 8 caracteres del campo 'Localizer' deben ser números y el último una letra.")
 
-                try:
-                    validate(instance=data, schema=esquema)
-                except ValidationError as e:
-                    raise hme("Formato del archivo JSON incorrecto") from e
+            if "Localizer" not in data or "IdCard" not in data:
+                raise hme("Una de las etiquetas está vacía")
+            '''if 'IdCard' not in elemento:
+                raise hme("Etiqueta 2 nulo")'''
+            if data["Localizer"] == "":
+                raise hme("Valor etiqueta 1 nulo")
+            if not data['IdCard']:
+                raise hme("Valor etiqueta 2 nulo")
+            if len(data['Localizer']) != 32:
+                raise hme("Longitud del valor de la etiqueta 1 incorrecto")
+            if len(data['IdCard']) != 9:
+                raise hme("Longitud del valor de la etiqueta 2 incorrecto")
+            if not data['Localizer'].isalnum():
+                raise hme("Formato del valor de la etiqueta 1 incorrecto")
+            if not data['IdCard']:
+                raise hme("Formato del valor de la etiqueta 2 incorrecto")
+            if nif.is_valid(data['IdCard']) == False:
+                raise hme("Los primeros 8 caracteres del campo 'IdCard' deben ser números y el último una letra.")
+            try:
+                validate(instance=data, schema=esquema)
+            except ValidationError as e:
+                raise hme("Formato del archivo JSON incorrecto") from e
 
-                #HM-FR-02-P1:control para ver que el localizador esta en reservas y tiene el mismo ID
+            #HM-FR-02-P1:control para ver que el localizador esta en reservas y tiene el mismo ID
+            reservas = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
 
-                reservas = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
+            for reserva in reservas:
 
-                for reserva in reservas:
-                    if elemento['localizer'] in reserva['localizador']:
-                        if reserva['id_card'] != elemento['id_card']:
-                            raise hme('El localizador de la reserva y el ID no coinciden')
-                        else:
-                            num_days = reserva['num_days']
-                            tipoH = reserva['room_type']
-                            break
+                if data["Localizer"] in reserva["localizador"]:
+                    if reserva["id_card"] != data["IdCard"]:
+                        raise hme('El localizador de la reserva y el ID no coinciden')
                     else:
-                        raise hme('El localizador no está en las reservas')
+                        numero_de_dias = reserva["numDays"]
+                        tipo_de_habitacion = reserva["roomType"]
+                        break
+                else:
+                    raise hme('El localizador no está en las reservas')
 
-                #HM-FR-02-P2: creación de la instancia
+            #HM-FR-02-P2: creación de la instancia
 
-                # salida = llegada mas dias de estancia en segundos
-                arrival = datetime.utcnow().timestamp()
-                departure = arrival + num_days*(86400)
+            #crear el room_key
+            estancia = hotel_stay(data["IdCard"], data["Localizer"], numero_de_dias, tipo_de_habitacion)
+            arrival = str(estancia.arrival)
+            departure = estancia.departure.strftime("%d/%m/%Y")
 
-                #crear el room_key
-                estancia = hotel_stay(elemento['id_card'], elemento['localizer'], num_days, tipoH)
-                room_key = estancia.room_key
+            room_key = estancia.room_key
+            # Almacenar los datos de la estancia en el archivo
+            estanciaA = {
+                "id_card": data['IdCard'],
+                "room_type": tipo_de_habitacion,
+                "arrival": arrival,
+                "num_days": numero_de_dias,
+                "departure": departure,
+                "localizador": data['Localizer'],
+                "room_key": room_key
+            }
+            hotel_stays.append(estanciaA)
+            self.write_data_to_json(self.__json_path + r"\estancias.json", hotel_stays, "w")
 
-                # Almacenar los datos de la estancia en el archivo
-                estanciaA = {
-                    "id_card": elemento['id_card'],
-                    "room_type": tipoH,
-                    "arrival": arrival,
-                    "num_days": num_days,
-                    "departure": departure,
-                    "localizador": elemento['localizer'],
-                    "room_key": room_key
-                }
-                hotel_stays.append(estanciaA)
-                self.write_data_to_json(self.__json_path + r"\hotel_stays.json.json", hotel_stays, "w")
-                print("Estancia almacenada")
-                return room_key
+            return room_key
 
         except FileNotFoundError as e:
             raise hme("Wrong file or file path") from e

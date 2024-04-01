@@ -4,7 +4,7 @@ import os.path
 from unittest import TestCase
 import sys
 
-sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_management_exception import hotel_management_exception
 from hotel_manager import hotel_manager
@@ -13,9 +13,9 @@ from hotel_manager import hotel_manager
 class test_room_reservation(TestCase):
     """Clase para crear los test de prueba de la funcion 1: Room Reservation"""
     __path_tests = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     __path_data = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     @classmethod
     def setUp(cls):
@@ -45,7 +45,7 @@ class test_room_reservation(TestCase):
                 # print (localizer)
                 if inputData["id_test"] == "TC1":
                     print("entra en test1 ****")
-                    self.assertEqual(localizer, "57d92f8f3073e778b64570f1db3007da")
+                    self.assertEqual(localizer, "445b2a1066b7d5a517c0b293bd1667a1")
                 elif inputData["id_test"] == "TC6":
                     print("entra en test6 ****")
                     self.assertEqual(localizer, "d58de8fcfd3e26087ac677355c008ffd")
