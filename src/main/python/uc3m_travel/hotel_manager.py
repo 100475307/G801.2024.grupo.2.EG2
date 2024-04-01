@@ -3,11 +3,13 @@ clase hotel_manager
 """
 import json
 import hashlib
-from datetime import datetime, timedelta
+import datetime
 import re
 import sys
 from jsonschema import validate, ValidationError
 from luhn import verify
+
+from src.main.python.uc3m_travel.hotel_stay import hotel_stay
 
 sys.path.append(r'C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
@@ -213,6 +215,7 @@ class hotel_manager:
         return localizador
 
     def guest_arrival(self, fichero_reservas):
+        hotel_stays = [] #lista vacía para almacenar todas las estancias
         # esquema correcto para los archivos json
         esquema = {
             "type": "object",
@@ -226,7 +229,7 @@ class hotel_manager:
         try:
             with open(fichero_reservas, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            for elemento in fichero_reservas:
+            for elemento in data:
                 if 'Localizer' not in elemento:
                     raise hme("Etiqueta 1 nulo")
                 if 'IdCard' not in elemento:
@@ -252,6 +255,48 @@ class hotel_manager:
                 except ValidationError as e:
                     raise hme("Formato del archivo JSON incorrecto") from e
 
+                #HM-FR-02-P1:control para ver que el localizador esta en reservas y tiene el mismo ID
+
+                reservas = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
+
+                for reserva in reservas:
+                    if elemento['Localizer'] in reserva['localizador']:
+                        if reserva['id_card'] != elemento['IdCard']:
+                            raise hme('El localizador de la reserva y el ID no coinciden')
+                        else:
+                            numDays = reserva['numDays']
+                            tipoH = reserva['roomType']
+                            break
+                    else:
+                        raise hme('El localizador no está en las reservas')
+
+                #HM-FR-02-P2: creación de la instancia
+
+                # salida = llegada mas dias de estancia en segundos
+                arrival = datetime.utcnow().timestamp()
+                departure = arrival + numDays*(86400)
+
+                #crear el room_key
+                hs = hotel_stay()
+                estancia = hs(elemento['IdCard'], elemento['Localizer'], numDays, tipoH)
+                room_key = estancia.room_key
+
+                # Almacenar los datos de la estancia en el archivo
+                estanciaA = {
+                    "IdCard": elemento['IdCard'],
+                    "roomType": tipoH,
+                    "arrival": arrival,
+                    "numDays": num_days,
+                    "departure": departure,
+                    "localizador": localizador,
+                    "room_key": room_key
+                }
+                hotel_stays.append(estanciaA)
+                self.write_data_to_json(self.__json_path + r"\hotel_stays.json.json", hotel_stays, "w")
+                print("Estancia almacenada")
+                return room_key
+
+
         except FileNotFoundError as e:
             raise hme("Wrong file or file path") from e
         except json.JSONDecodeError as e:
@@ -259,40 +304,6 @@ class hotel_manager:
         with open(fichero_reservas, 'r') as file:
             data = json.load(file)
 
-        localizer = data.get('Localizer')
-
-        with open(fichero_reservas, 'r') as file:
-            reservationsData = file.read()
-
-        # comprobar que el localizador está en reservas
-        if localizer in reservationsData:
-            numDays = data.get('num_days')
-
-            # salida = llegada mas dias de estancia en segundos
-            arrival = datetime.utcnow().timestamp()
-            departure = arrival + (numDays * 86400)
-
-            roomKeyData = {
-                "alg": "SHA-256",
-                "typ": "room_key",
-                "localizer": localizer,
-                "arrival": arrival,
-                "departure": departure
-            }
-            roomKeyText = json.dumps(roomKeyData, separators=(',', ':'))  # Convertir a JSON sin espacios
-
-            # Calcula el SHA-256
-            roomKeyHash = hashlib.sha256(roomKeyText.encode()).hexdigest()
-
-            # guardamos el hash en un fichero
-            with open('hotel_stays.txt', 'a') as file:
-                file.write(f"Localizer: {localizer}, Room Key: {roomKeyHash}\n")
-
-            return roomKeyHash
-
-        else:
-            # el localizador no esta en reservas
-            raise hme("El localizador de reserva no esta en el fichero de reservas")
 
     def guest_departure(self, room_key):
         checkouts = self.read_data_from_json(self.__json_path + r"\hotel_stays.json", "r")
