@@ -11,19 +11,16 @@ from jsonschema import validate, ValidationError
 from luhn import verify
 from stdnum.es import nif
 
-from src.main.python.uc3m_travel.hotel_stay import hotel_stay
-
-sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
-
-from hotel_management_exception import hotel_management_exception as hme
-from hotel_reservation import hotel_reservation as hr
+from .hotel_reservation import hotel_reservation as hr
+from .hotel_management_exception import hotel_management_exception as hme
+from .hotel_stay import hotel_stay
 
 
 class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\ghija\PycharmProjects"
+    __json_path = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
         r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
     def init(self):
         """
@@ -164,7 +161,7 @@ class hotel_manager:
                 "Nombre y/o apellido erróneos. No puede usar dos espacios consecutivos")
 
         if not all(caracter.isalpha() or caracter.isspace() for caracter in name_and_surname):
-            raise hme("Nombre y/o apellido erróneos. Contiene letras")
+            raise hme("Nombre y/o apellido erróneos. Contiene letras")
 
         if len(phone_number) > 9:
             raise hme(

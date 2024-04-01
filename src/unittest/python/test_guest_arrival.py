@@ -11,8 +11,8 @@ from src.main.python.uc3m_travel.hotel_management_exception import hotel_managem
 
 class test_guest_arrival(TestCase):
     """clase para los test de la función 2"""
-    __path_tests = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
-    __path_data = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_tests = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_data = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def setUp(self):
         """funcion setUp"""
@@ -38,7 +38,7 @@ class test_guest_arrival(TestCase):
         if index + 1 == 1:
             testid = "TC" + str(index + 1)
             with self.subTest(testid):
-                inputdata = r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index+1) + r".json"
+                inputdata = r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index+1) + r".json"
                 print("Executing: " + testid + ":" + inputdata)
                 ''' with open(inputdata, 'r') as archivo_prueba:
                     datos = json.load(archivo_prueba)
@@ -60,7 +60,7 @@ class test_guest_arrival(TestCase):
                 pass
             if index + 1 in [9, 12, 13, 16, 19, 20]:
                 testid = "TC" + str(index + 1)
-                inputdata = r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(
+                inputdata = r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(
                     index + 1) + r".json"
                 with self.subTest(testid):
                     print("Executing: " + testid + ":" + inputdata)
@@ -92,7 +92,7 @@ class test_guest_arrival(TestCase):
             else:
                 testid = "TC" + str(index + 1)
                 with self.subTest(testid):
-                    inputdata = r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index + 1) + r".json"
+                    inputdata = r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index + 1) + r".json"
                     print("Executing: " + testid + ":" + inputdata)
                     hm = hotel_manager()
 

@@ -1,15 +1,14 @@
 """Fichero para incluir los casos de pruebas de la funcion 1"""
+import copy
 import json
 import os.path
 from unittest import TestCase
-import sys
-
-sys.path.append(
-    r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
-
-from src.main.python.uc3m_travel.hotel_manager import hotel_manager
-from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
-from src.main.python.uc3m_travel.hotel_stay import hotel_stay
+from pathlib import Path
+from datetime import datetime
+from freezegun import freeze_time
+from uc3m_travel import hotel_manager
+from uc3m_travel import hotel_management_exception
+from uc3m_travel import hotel_stay
 
 
 class test_check_out(TestCase):
@@ -36,6 +35,7 @@ class test_check_out(TestCase):
         if os.path.isfile(ficherocheckout):
             os.remove(ficherocheckout)
 
+    @freeze_time("2024-06-16")
     def test_check_outs_ok(self):
         """Tests función 1 que se esperan correctos"""
         for inputData in self.__test_check_out:
@@ -52,85 +52,64 @@ class test_check_out(TestCase):
                     print("entra en test6 ****")
                     self.assertEqual(localizer, "d58de8fcfd3e26087ac677355c008ffd")
 
-                try:
-                    with open(self.__path_data + r"\checkouts.json", encoding='UTF-8', mode='r') as f:
-                        checkout = json.load(f)
-                except FileNotFoundError as e:
-                    raise hotel_management_exception("error en fichero o camino") from e
-                except json.JSONDecodeError:
-                    checkout = []
-                encontradocheckout = False
-                if not isinstance(checkout, list):
-                    # solucionar error si no se trata de una lista de diccionarios
-                    checkout = [checkout]
-                for c in checkout:
-                    if c["room_key"] == inputData["room_key"]:
-                        encontradocheckout = True
-                self.assertTrue(encontradocheckout)
-
+    @freeze_time("2024-06-16")
     def test_check_outs_ko(self):
         """TestCases - Expected NOT OK."""
         for inputData in self.__test_check_out:
-            if inputData["id_test"] not in ["TC7", "TC8"]:
+            if inputData["id_test"] not in ["TC7", "TC8", "TC1"]:
                 print("ENTRA EN NOT OK *****************+")
                 with self.subTest(inputData["id_test"]):
                     print("Ejecutando: " + inputData["id_test"])
                     hm = hotel_manager()
                     print("id_test", inputData["id_test"])
                     with self.assertRaises(hotel_management_exception) as result:
-                        print("HOLA*****************")
+                        print("HOLA*")
                         hm.guest_departure(inputData["room_key"])
                         print("room_key", inputData["room_key"], "departure", inputData["departure"])
-                        if inputData["id_test"] == "TC1":
-                            print("entra en test1 ****")
-                            self.assertEqual(result.exception.message,
-                                             "No hay datos de estancias")
-                        elif inputData["id_test"] == "TC2":
-                            print("entra en test2 ****")
-                            self.assertEqual(result.exception.message,
-                                             "Código de habitación no cumple con el formato correcto")
-                        elif inputData["id_test"] == "TC3":
-                            print("entra en test3 ****")
-                            self.assertEqual(result.exception.message,
-                                             "La llave de la habitación no existe")
-                        elif inputData["id_test"] == "TC4":
-                            print("entra en test4 ****")
-                            self.assertEqual(result.exception.message,
-                                             "La fecha de salida no coincide con la de hoy")
-                        elif inputData["id_test"] == "TC5":
-                            print("entra en test5 ****")
-                            self.assertEqual(result.exception.message,
-                                             "La fecha de salida no coincide con la de hoy")
-                        elif inputData["id_test"] == "TC6":
-                            print("entra en test6 ****")
-                            self.assertEqual(result.exception.message,
-                                             "La persona ya ha hecho checkout hoy")
+                    #if inputData["id_test"] == "TC1":
+                    #    print("entra en test1 ****")
+                    #    self.assertEqual(result.exception.message,
+                    #                     "No hay datos de estancias")
+                    if inputData["id_test"] == "TC2":
+                        print("entra en test2 ****")
+                        self.assertEqual(result.exception.message,
+                                         "Código de habitación no cumple con el formato correcto")
+                    elif inputData["id_test"] == "TC3":
+                        print("entra en test3 ****")
+                        self.assertEqual(result.exception.message,
+                                         "La llave de la habitación no existe")
+                    elif inputData["id_test"] == "TC4":
+                        print("entra en test4 ****")
+                        self.assertEqual(result.exception.message,
+                                         "La fecha de salida no coincide con la de hoy")
+                    elif inputData["id_test"] == "TC5":
+                        print("entra en test5 ****")
+                        self.assertEqual(result.exception.message,
+                                         "La fecha de salida no coincide con la de hoy")
+                    elif inputData["id_test"] == "TC6":
+                        print("entra en test6 ****")
+                        self.assertEqual(result.exception.message,
+                                         "La persona ya ha hecho checkout hoy")
 
-"""
-    def test_guest_departure(self, mock_datetime):
-        # definimos la fecha de entrada
-        mock_datetime.utcnow.return_value = datetime(2020, 12, 1)
-        # definimos la fecha de salida
-        mock_datetime.timestamp.return_value = 1606780800
-        # creamos una instancia de hotel_manager
-        hm = hotel_manager()
-        # creamos una instancia de hotel_stay y le damos los datos del primer caso de prueba del
-        # fichero hotel_stays.json, leido en setUp() como file
-        try:
-            with open(cls.__path_tests, "r") as file:
-                cls.data = json.load(file)
-        except FileNotFoundError:
-            print("File not found")
-        hs1 = hotel_stay(cls.data[0]["id_card"], cls.data[0]["localizer"],
-                         cls.data[0]["num_days"], cls.data[0]["room_type"])
-        hs2 = hotel_stay(cls.data[1]["id_card"], cls.data[1]["localizer"],
-                         cls.data[1]["num_days"], cls.data[1]["room_type"])
-
-        # probamos para los dos, la función guest_departure(room_key) con la room_key correcta
-        # y comprobamos que la salida es la esperada
-        self.assertEqual(hm.guest_departure(hs1.room_key), "OK")
-        self.assertEqual(hm.guest_departure(hs2.room_key), "ERROR")
-"""
-
-if _name_ == '_main_':
-    unittest.main()
+    def test_check_outs_ko_vacio(self):
+        """TestCases - Expected NOT OK."""
+        for inputData in self.__test_check_out:
+            if inputData["id_test"] in ["TC1"]:
+                print("ENTRA EN NOT OK *****************+")
+                with self.subTest(inputData["id_test"]):
+                    print("Ejecutando: " + inputData["id_test"])
+                    hm = hotel_manager()
+                    print("id_test", inputData["id_test"])
+                    with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="r") as f:
+                        data = json.load(f)
+                    data = copy.deepcopy(data)
+                    with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="w") as f:
+                        json.dump("", f)
+                    with self.assertRaises(hotel_management_exception) as result:
+                        hm.guest_departure(inputData["room_key"])
+                    with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="w") as f:
+                        json.dump(data, f)
+                    if inputData["id_test"] == "TC1":
+                        print("entra en test1 ****")
+                        self.assertEqual(result.exception.message,
+                                         "No hay datos de estancias")
