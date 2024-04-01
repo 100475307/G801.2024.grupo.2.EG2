@@ -10,12 +10,9 @@ from src.main.python.uc3m_travel.hotel_management_exception import hotel_managem
 
 class test_guest_arrival(TestCase):
     """clase para los test de la función 2"""
-    __path_tests = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
-                       r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
-    __path_tests2 = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
-                        r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
-    __path_data = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
-                      r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_tests = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_tests2 = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_data = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def setUp(self):
         """funcion setUp"""
