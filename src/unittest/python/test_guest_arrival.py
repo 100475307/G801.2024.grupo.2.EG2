@@ -4,15 +4,18 @@ import json
 import os.path
 import hashlib
 from freezegun import freeze_time
-from src.main.python.uc3m_travel.hotel_stay import hotel_stay
-from src.main.python.uc3m_travel.hotel_manager import hotel_manager
-from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
+import sys
+
+sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+from hotel_stay import hotel_stay
+from hotel_manager import hotel_manager
+from hotel_management_exception import hotel_management_exception
 
 
 class test_guest_arrival(TestCase):
     """clase para los test de la función 2"""
-    __path_tests = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
-    __path_data = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_tests = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_data = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def setUp(self):
         """funcion setUp"""
@@ -38,16 +41,15 @@ class test_guest_arrival(TestCase):
         if index + 1 == 1:
             testid = "TC" + str(index + 1)
             with self.subTest(testid):
-                inputdata = r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index+1) + r".json"
+                inputdata = r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index+1) + r".json"
                 print("Executing: " + testid + ":" + inputdata)
-                ''' with open(inputdata, 'r') as archivo_prueba:
+                with open(inputdata, 'r') as archivo_prueba:
                     datos = json.load(archivo_prueba)
-                print('los datos que esta comprobando son: ',datos)'''
+                print('los datos que esta comprobando son: ',datos)
                 hm = hotel_manager()
                 roomkey = hm.guest_arrival(inputdata)
-                print('el room key desl test es :',roomkey)
+                print('el room key desl test es :', roomkey)
                 if testid == "TC1":
-
                     self.assertEqual(roomkey,
                                      "65377f12f7892239d712f2c687e5029f4133fcd7c885774da5a3e1c76fad7fbd")
 
@@ -58,9 +60,9 @@ class test_guest_arrival(TestCase):
         for index in range(70):
             if index + 1 in [1]:
                 pass
-            if index + 1 in [9, 12, 13, 16, 19, 20]:
+            elif index + 1 in [8, 11, 12, 15, 18, 19, 21, 25, 49, 50, 55, 56, 61, 62, 67, 68]:
                 testid = "TC" + str(index + 1)
-                inputdata = r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(
+                inputdata = r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(
                     index + 1) + r".json"
                 with self.subTest(testid):
                     print("Executing: " + testid + ":" + inputdata)
@@ -70,6 +72,9 @@ class test_guest_arrival(TestCase):
                         print('entra en el result')
                         roomkey = hm.guest_arrival(inputdata)
                         print('sale del with +++++++++++++++++++++++++++++')
+                    if testid == "TC8":
+                        self.assertEqual(result.exception.message,
+                                         "Hay un fallo de escritura en alguna de las claves")
                     if testid == "TC11":
                         self.assertEqual(result.exception.args[0],
                                          "Longitud del valor de la etiqueta 1 incorrecto")
@@ -78,21 +83,47 @@ class test_guest_arrival(TestCase):
                                          "Formato del valor de la etiqueta 1 incorrecto")
                     if testid == "TC15":
                         self.assertEqual(result.exception.message,
-                                         "Etiqueta 2 nulo")
+                                         "Hay un fallo de escritura en alguna de las claves")
                     if testid == "TC18":
                         self.assertEqual(result.exception.message,
-                                         "Formato del valor de la etiqueta 2 incorrecto")
+                                         "Los primeros 8 caracteres del campo 'IdCard' deben ser números y el último una letra.")
                     if testid == "TC19":
                         self.assertEqual(result.exception.message,
                                          "Longitud del valor de la etiqueta 2 incorrecto")
-                    if testid == "TC8":
+                    if testid == "TC21":
                         self.assertEqual(result.exception.message,
-                                         "Etiqueta 1 nulo")
-
+                                         "El fichero de reservas está vacío")
+                    if testid == "TC25":
+                        self.assertEqual(result.exception.message,
+                                         "El archivo está vacío")
+                    if testid == "TC49":
+                        self.assertEqual(result.exception.message,
+                                         "Hay un fallo de escritura en alguna de las claves")
+                    if testid == "TC50":
+                        self.assertEqual(result.exception.message,
+                                         "Hay un fallo de escritura en alguna de las claves")
+                    if testid == "TC55":
+                        self.assertEqual(result.exception.message,
+                                         "Valor etiqueta 1 nulo")
+                    if testid == "TC56":
+                        self.assertEqual(result.exception.message,
+                                         "Longitud del valor de la etiqueta 1 incorrecto")
+                    if testid == "TC61":
+                        self.assertEqual(result.exception.message,
+                                         "Hay un fallo de escritura en alguna de las claves")
+                    if testid == "TC62":
+                        self.assertEqual(result.exception.message,
+                                         "Hay un fallo de escritura en alguna de las claves")
+                    if testid == "TC67":
+                        self.assertEqual(result.exception.message,
+                                         "Valor etiqueta 2 nulo")
+                    if testid == "TC68":
+                        self.assertEqual(result.exception.message,
+                                         "Longitud del valor de la etiqueta 2 incorrecto")
             else:
                 testid = "TC" + str(index + 1)
                 with self.subTest(testid):
-                    inputdata = r"C:\Users\inest\PycharmProjects\Desarrollo de Software\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index + 1) + r".json"
+                    inputdata = r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index + 1) + r".json"
                     print("Executing: " + testid + ":" + inputdata)
                     hm = hotel_manager()
 

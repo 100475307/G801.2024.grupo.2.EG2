@@ -10,18 +10,19 @@ import sys
 from jsonschema import validate, ValidationError
 from luhn import verify
 from stdnum.es import nif
+import sys
+sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
-from .hotel_reservation import hotel_reservation as hr
-from .hotel_management_exception import hotel_management_exception as hme
-from .hotel_stay import hotel_stay
+from hotel_reservation import hotel_reservation as hr
+from hotel_management_exception import hotel_management_exception as hme
+from hotel_stay import hotel_stay
 
 
 class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\inest\PycharmProjects\Desarrollo de Software"
-        r"\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __json_path = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     def init(self):
         """
         hace pass del init
@@ -224,51 +225,65 @@ class hotel_manager:
             },
             "required": ["Localizer", "IdCard"]
         }
-
+        print("Esquemaaaaaaaaaa", esquema)
         try:
             if os.stat(fichero_reservas).st_size == 0:
+                print("RESERVAS VACIOOOO")
                 raise hme("El fichero de reservas está vacío")
             with open(fichero_reservas, "r", encoding="utf-8") as f:
                 data = json.load(f)
             if not data:
+                print("FICHERO RESERVAS VACIOOOO")
                 raise hme("El archivo está vacío")
+            """for key, value in data.items():
+                print("entra en bucle:", key, value)
+                if not value and key == "Localizer":
+                    raise hme("Valor de localizador vacío")
+                if not value and key == "IdCard":
+                    raise hme("Valor de IdCard vacío")"""
 
             if "Localizer" not in data or "IdCard" not in data:
-                raise hme("Una de las etiquetas está vacía")
-            '''if 'IdCard' not in elemento:
-                raise hme("Etiqueta 2 nulo")'''
+                raise hme("Hay un fallo de escritura en alguna de las claves")
+
             if data["Localizer"] == "":
+                print("entra en etiqueta 1 nulo")
                 raise hme("Valor etiqueta 1 nulo")
             if not data['IdCard']:
+                print("entra en etiqueta 2 nula")
                 raise hme("Valor etiqueta 2 nulo")
             if len(data['Localizer']) != 32:
+                print("longitud de la etiqueta 1")
                 raise hme("Longitud del valor de la etiqueta 1 incorrecto")
             if len(data['IdCard']) != 9:
+                print("longitud de la etiqueta 2")
                 raise hme("Longitud del valor de la etiqueta 2 incorrecto")
             if not data['Localizer'].isalnum():
+                print("formato de la etiqueta 1")
                 raise hme("Formato del valor de la etiqueta 1 incorrecto")
-            if not data['IdCard']:
-                raise hme("Formato del valor de la etiqueta 2 incorrecto")
             if nif.is_valid(data['IdCard']) == False:
+                print("id card 8 numeros y una letra")
                 raise hme("Los primeros 8 caracteres del campo 'IdCard' deben ser números y el último una letra.")
+
             try:
                 validate(instance=data, schema=esquema)
             except ValidationError as e:
+                print("formato del archivo json incorrecto despues de ifssss")
                 raise hme("Formato del archivo JSON incorrecto") from e
 
             #HM-FR-02-P1:control para ver que el localizador esta en reservas y tiene el mismo ID
             reservas = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
 
             for reserva in reservas:
-
+                print("entra en bucle reservas")
                 if data["Localizer"] in reserva["localizador"]:
                     if reserva["id_card"] != data["IdCard"]:
+                        print("entra en localizador e id no coinciden")
                         raise hme('El localizador de la reserva y el ID no coinciden')
-                    else:
-                        numero_de_dias = reserva["numDays"]
-                        tipo_de_habitacion = reserva["roomType"]
-                        break
+                    numero_de_dias = reserva["numDays"]
+                    tipo_de_habitacion = reserva["roomType"]
+                    break
                 else:
+                    print("entra en else con localizador no en reservas")
                     raise hme('El localizador no está en las reservas')
 
             #HM-FR-02-P2: creación de la instancia
@@ -295,9 +310,11 @@ class hotel_manager:
             return room_key
 
         except FileNotFoundError as e:
-            raise hme("Wrong file or file path") from e
+            print("entra en final wrong file or path")
+            raise hme("Archivo o camino incorrecto") from e
         except json.JSONDecodeError as e:
-            raise hme("JSON Decode Error - Wrong JSON Format") from e
+            print("entra en final formato de json incorrecto")
+            raise hme("Formato del archivo JSON incorrecto") from e
 
 
 
