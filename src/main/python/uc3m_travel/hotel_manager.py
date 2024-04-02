@@ -281,14 +281,16 @@ class hotel_manager:
             for reserva in reservas:
                 print("entra en bucle reservas")
                 if data["Localizer"] in reserva["localizador"]:
+                    print('encuentra el localizador')
                     if reserva["id_card"] != data["IdCard"]:
                         print("entra en localizador e id no coinciden")
                         raise hme('El localizador de la reserva y el ID no coinciden')
                     numero_de_dias = reserva["numDays"]
                     print(numero_de_dias)
                     tipo_de_habitacion = reserva["roomType"]
+                    break
                 else:
-                    print("entra en else con localizador no en reservas")
+                    print(data["Localizer"])
                     raise hme('El localizador no está en las reservas')
 
             #HM-FR-02-P2: creación de la instancia

@@ -69,7 +69,6 @@ class test_check_out(TestCase):
                     #                     "No hay datos de estancias")
                     if inputData["id_test"] == "TC2":
                         print("entra en test2 ****")
-                        print('caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
                         print(result.exception.message)
                         self.assertEqual(result.exception.message,
                                          "Código de habitación no cumple con el formato correcto")
@@ -78,10 +77,10 @@ class test_check_out(TestCase):
                         self.assertEqual(result.exception.message,
                                          "La llave de la habitación no existe")
                     elif inputData["id_test"] == "TC4":
-                        freeze_time("1999-01-01")
-                        print("entra en test4 ****")
-                        self.assertEqual(result.exception.message,
-                                         "La fecha de salida no coincide con la de hoy")
+                        with freeze_time("1999-01-01"):
+                            print("entra en test4 ****")
+                            self.assertEqual(result.exception.message,
+                                             "La fecha de salida no coincide con la de hoy")
 
                     elif inputData["id_test"] == "TC5":
                         print("entra en test5 ****")
