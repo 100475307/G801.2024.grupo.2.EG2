@@ -23,6 +23,7 @@ class hotel_management_exception(Exception):
         :return:
         """
         print("ENTRA MESSAGEEEEE")
+        print('el mensake es:',self.__message)
         return self.__message
 
     @message.setter
@@ -30,4 +31,5 @@ class hotel_management_exception(Exception):
         """
         convierte message en value
         """
+
         self.__message = value

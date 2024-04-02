@@ -3,7 +3,8 @@ clase hotel_manager
 """
 import json
 import hashlib
-import datetime
+from freezegun import freeze_time
+from datetime import datetime
 import os
 import re
 import sys
@@ -11,7 +12,7 @@ from jsonschema import validate, ValidationError
 from luhn import verify
 from stdnum.es import nif
 import sys
-sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_reservation import hotel_reservation as hr
 from hotel_management_exception import hotel_management_exception as hme
@@ -22,7 +23,7 @@ class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __json_path = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     def init(self):
         """
         hace pass del init
@@ -280,6 +281,7 @@ class hotel_manager:
                         print("entra en localizador e id no coinciden")
                         raise hme('El localizador de la reserva y el ID no coinciden')
                     numero_de_dias = reserva["numDays"]
+                    print(numero_de_dias)
                     tipo_de_habitacion = reserva["roomType"]
                     break
                 else:
@@ -318,8 +320,9 @@ class hotel_manager:
 
 
 
+    @freeze_time("02/01/2025")
     def guest_departure(self, room_key):
-        checkouts = self.read_data_from_json(self.__json_path + r"\hotel_stays.json", "r")
+        checkouts = self.read_data_from_json(self.__json_path + r"\estancias.json", "r")
         if not checkouts:
             raise hme("No hay datos de estancias")
 
@@ -327,22 +330,24 @@ class hotel_manager:
         if not re.match(r"^[a-fA-F0-9]{64}$", room_key):
             raise hme("Código de habitación no cumple con el formato correcto")
 
+
         # Para cada entrada de chechout, miramos si la llave de la habitación coincide con la que se ha pasado como argumento
         # Si la llave de la habitación existe, ponemos una booleana EntraCkeckout a True
-        entracheckout = False
+        entracheckout, entrafecha = False, False
         hoy = datetime.now().date().strftime("%d/%m/%Y")
-        entrafecha = False
         for checkout in checkouts:
-            for key in checkout:
-                if key == "room_key" and checkout[key] == room_key:
-                    entracheckout = True
-                    if key == "departure" and checkout[key] == hoy:
-                        entrafecha = True
+            if checkout["room_key"] == room_key:
+                entracheckout = True
+                print('ha comprobado la roomkey')
+                print('la fecha de salida es:',checkout["salidas"])
+                print('la fecha de hoy es:',   hoy)
+                if checkout["salidas"] == hoy:
+                    entrafecha = True
 
         # Si el room_key existe, verificar que la fecha de salida esperada coincida con hoy
-        if not entracheckout:
+        if entracheckout == False:
             raise hme("La llave de la habitación no existe")
-        if not entrafecha:
+        if entrafecha == False:
             raise hme("La fecha de salida no coincide con la de hoy")
 
         # Si lo anterior es correcto, guardar los datos (fecha de salida + llave de la habitación) en un nuevo archivo checkouts.json mediante writeDataToJson

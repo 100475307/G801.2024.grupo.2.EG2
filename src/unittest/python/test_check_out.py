@@ -1,22 +1,24 @@
 """Fichero para incluir los casos de pruebas de la funcion 1"""
 import copy
 import json
+import sys
 import os.path
 from unittest import TestCase
 from pathlib import Path
 from datetime import datetime
 from freezegun import freeze_time
-from uc3m_travel import hotel_manager
-from uc3m_travel import hotel_management_exception
-from uc3m_travel import hotel_stay
+sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+from src.main.python.uc3m_travel.hotel_manager import hotel_manager
+from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
+from src.main.python.uc3m_travel.hotel_stay import hotel_stay
 
 
 class test_check_out(TestCase):
     """Clase para crear los test de prueba de la funcion 1: Room Reservation"""
     __path_tests = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     __path_data = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     @classmethod
     def setUp(cls):
@@ -72,8 +74,11 @@ class test_check_out(TestCase):
                     #                     "No hay datos de estancias")
                     if inputData["id_test"] == "TC2":
                         print("entra en test2 ****")
-                        self.assertEqual(result.exception.message,
-                                         "Código de habitación no cumple con el formato correcto")
+                        print('mensaje de vuelta es: ',result.exception.message)
+                        print('el mensaje compara es:', "Código de habitación no cumple con el formato correcto")
+                        self.assertEqual(result.exception.message,"Código de habitación no cumple con el formato correcto")
+
+
                     elif inputData["id_test"] == "TC3":
                         print("entra en test3 ****")
                         self.assertEqual(result.exception.message,
