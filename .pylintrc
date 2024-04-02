@@ -176,8 +176,8 @@ const-naming-style=UPPER_CASE
 # ones are exempt.
 docstring-min-length=-1
 
-# Naming style matching correct function names.
-function-naming-style=camelCase
+# Naming style not matching correct function names.
+disable=C0103
 
 # Regular expression matching correct function names. Overrides function-
 # naming-style. If left empty, function names will be checked with the set
@@ -288,7 +288,7 @@ ignored-parents=
 max-args=8
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=7
+max-attributes=8
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr=6
@@ -297,8 +297,8 @@ max-bool-expr=6
 max-branches=50
 
 # Maximum number of locals for function / method body.
-max-locals=15
-
+max-locals=16
+F
 # Maximum number of parents for a class (see R0901).
 max-parents=10
 

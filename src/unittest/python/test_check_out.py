@@ -4,19 +4,16 @@ import json
 import os.path
 from unittest import TestCase
 from freezegun import freeze_time
-from pathlib import Path
-from datetime import datetime
 from src.main.python.uc3m_travel.hotel_manager import hotel_manager
 from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
-from src.main.python.uc3m_travel.hotel_stay import hotel_stay
 
 
 class test_check_out(TestCase):
     """Clase para crear los test de prueba de la funcion 1: Room Reservation"""
     __path_tests = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     __path_data = str(
-        r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+        r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     @classmethod
     def setUp(cls):
@@ -46,10 +43,10 @@ class test_check_out(TestCase):
                 localizer = hm.guest_departure(inputData["room_key"])
                 # print (localizer)
                 if inputData["id_test"] == "TC7":
-                    print("entra en test1 **")
+                    print("entra en test1 ****")
                     self.assertTrue(localizer)
                 elif inputData["id_test"] == "TC8":
-                    print("entra en test6 ****")
+                    print("entra en test8 ****")
                     self.assertEqual(localizer, "d58de8fcfd3e26087ac677355c008ffd")
 
     @freeze_time("2024-06-16")
@@ -65,8 +62,15 @@ class test_check_out(TestCase):
                     with self.assertRaises(hotel_management_exception) as result:
                         print("HOLA*")
                         hm.guest_departure(inputData["room_key"])
+
+                    #if inputData["id_test"] == "TC1":
+                    #    print("entra en test1 ****")
+                    #    self.assertEqual(result.exception.message,
+                    #                     "No hay datos de estancias")
                     if inputData["id_test"] == "TC2":
                         print("entra en test2 ****")
+                        print('caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                        print(result.exception.message)
                         self.assertEqual(result.exception.message,
                                          "Código de habitación no cumple con el formato correcto")
                     elif inputData["id_test"] == "TC3":
@@ -74,24 +78,17 @@ class test_check_out(TestCase):
                         self.assertEqual(result.exception.message,
                                          "La llave de la habitación no existe")
                     elif inputData["id_test"] == "TC4":
-                        print("entra en test4 **")
-
-                        @freeze_time("2024-06-01")
-                        def tc14(self):
-                            self.assertEqual(result.exception.message,
-                                             "La fecha de salida no coincide con la de hoy")
-
-                        tc14(self)
+                        freeze_time("1999-01-01")
+                        print("entra en test4 ****")
+                        self.assertEqual(result.exception.message,
+                                         "La fecha de salida no coincide con la de hoy")
 
                     elif inputData["id_test"] == "TC5":
-                        print("entra en test5 **")
+                        print("entra en test5 ****")
+                        freeze_time("2028-08-01")
+                        self.assertEqual(result.exception.message,
+                                         "La fecha de salida no coincide con la de hoy")
 
-                        @freeze_time("2024-08-01")
-                        def tc15(self):
-                            self.assertEqual(result.exception.message,
-                                             "La fecha de salida no coincide con la de hoy")
-
-                        tc15(self)
                     elif inputData["id_test"] == "TC6":
                         print("entra en test6 ****")
                         self.assertEqual(result.exception.message,

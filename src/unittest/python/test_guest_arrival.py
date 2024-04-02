@@ -3,8 +3,9 @@ from unittest import TestCase
 import json
 import os.path
 import hashlib
-from freezegun import freeze_time
 import sys
+from freezegun import freeze_time
+
 
 sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 from hotel_stay import hotel_stay
@@ -43,8 +44,8 @@ class test_guest_arrival(TestCase):
             with self.subTest(testid):
                 inputdata = r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index+1) + r".json"
                 print("Executing: " + testid + ":" + inputdata)
-                with open(inputdata, 'r') as archivo_prueba:
-                    datos = json.load(archivo_prueba)
+                with open(inputdata, 'r',encoding='utf-8') as archivoPrueba:
+                    datos = json.load(archivoPrueba)
                 print('los datos que esta comprobando son: ',datos)
                 hm = hotel_manager()
                 roomkey = hm.guest_arrival(inputdata)

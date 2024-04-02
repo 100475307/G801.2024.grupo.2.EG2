@@ -8,6 +8,7 @@ sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\
 
 from hotel_management_exception import hotel_management_exception
 from hotel_manager import hotel_manager
+from hotel_stay import hotel_stay
 
 
 class test_room_reservation(TestCase):
@@ -41,7 +42,8 @@ class test_room_reservation(TestCase):
                 with self.subTest(inputData["id_test"]):
                     print("Ejecutando: " + inputData["id_test"])
                 hm = hotel_manager()
-                localizer = hm.room_reservation(inputData["credit_card_number"], inputData["id_card"], inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"], inputData["arrival"], inputData["num_days"])
+                localizer = hm.room_reservation(inputData["credit_card_number"], inputData["id_card"],
+                                                inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"], inputData["arrival"], inputData["num_days"])
                 # print (localizer)
                 if inputData["id_test"] == "TC1":
                     print("entra en test1 ****")
@@ -98,7 +100,8 @@ class test_room_reservation(TestCase):
                     print("id_test", inputData["id_test"])
                     with self.assertRaises(hotel_management_exception) as result:
                         print("HOLA*****************")
-                        hm.room_reservation(inputData["credit_card_number"], inputData["id_card"], inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"], inputData["arrival"], inputData["num_days"])
+                        hm.room_reservation(inputData["credit_card_number"], inputData["id_card"], inputData["name_and_surname"],
+                                            inputData["phone_number"], inputData["room_type"], inputData["arrival"], inputData["num_days"])
                     print("credit_card_number", inputData["credit_card_number"], "id_card", inputData["id_card"],
                           inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"],
                           inputData["arrival"], inputData["num_days"])

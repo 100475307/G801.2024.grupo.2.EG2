@@ -2,8 +2,6 @@
 clase hotel_manager
 """
 import json
-import hashlib
-from freezegun import freeze_time
 from datetime import datetime, timedelta
 import os
 import re
@@ -11,8 +9,8 @@ import sys
 from jsonschema import validate, ValidationError
 from luhn import verify
 from stdnum.es import nif
-import sys
-sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+
+sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_reservation import hotel_reservation as hr
 from hotel_management_exception import hotel_management_exception as hme
@@ -23,7 +21,7 @@ class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __json_path = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     def init(self):
         """
         hace pass del init
@@ -39,6 +37,9 @@ class hotel_manager:
         return verify(x)
 
     def validateidcard(self, x):
+        '''
+        valida el id
+        '''
         #Comprobamos la longitud del DNI
         if len(x) != 9:
             return False
@@ -53,16 +54,19 @@ class hotel_manager:
         if x[-1].upper() != letraEsperada:
             return False
         return True
-
     def es_bisiesto(self, ano):
+        '''
+        dice si es bisiesto
+        '''
         return ano % 4 == 0 and (ano % 100 != 0 or ano % 400 == 0)
     def validatearrival(self, x):
+        '''
+        valida la fecha de llegada
+        '''
         partesfecha = x.split('/')
-        #Si no solo contiene día, fecha y hora
-        if len(partesfecha) != 3:
-            return False
-        #si día o mes más de 2 dígitos y año más de 4
-        if len(partesfecha[0]) != 2 or len(partesfecha[1]) != 2 or len(partesfecha[2]) != 4:
+
+        #si día o mes más de 2 dígitos y año más de 4//Si no solo contiene día, fecha y hora
+        if len(partesfecha) != 3 or len(partesfecha[0]) != 2 or len(partesfecha[1]) != 2 or len(partesfecha[2]) != 4:
             return False
 
         #verificar que no tiene dígitos
@@ -92,10 +96,13 @@ class hotel_manager:
         return True
 
     def validatenumdays(self, x):
+        '''
+        valida numero de dias
+        '''
         # Verificar si el número es dígito y está entre 1 y 10
         if x.isdigit():
             numero = int(x)
-            if numero >= 1 and numero <= 10:
+            if 1 <= numero <= 10:
                 return True
         return False
 
@@ -216,6 +223,9 @@ class hotel_manager:
         return localizador
 
     def guest_arrival(self, fichero_reservas):
+        '''
+        funcion guest arrival
+        '''
         hotel_stays = [] #lista vacía para almacenar todas las estancias
         # esquema correcto para los archivos json
         esquema = {
@@ -236,12 +246,6 @@ class hotel_manager:
             if not data:
                 print("FICHERO RESERVAS VACIOOOO")
                 raise hme("El archivo está vacío")
-            """for key, value in data.items():
-                print("entra en bucle:", key, value)
-                if not value and key == "Localizer":
-                    raise hme("Valor de localizador vacío")
-                if not value and key == "IdCard":
-                    raise hme("Valor de IdCard vacío")"""
 
             if "Localizer" not in data or "IdCard" not in data:
                 raise hme("Hay un fallo de escritura en alguna de las claves")
@@ -261,7 +265,7 @@ class hotel_manager:
             if not data['Localizer'].isalnum():
                 print("formato de la etiqueta 1")
                 raise hme("Formato del valor de la etiqueta 1 incorrecto")
-            if nif.is_valid(data['IdCard']) == False:
+            if nif.is_valid(data['IdCard']) is False:
                 print("id card 8 numeros y una letra")
                 raise hme("Los primeros 8 caracteres del campo 'IdCard' deben ser números y el último una letra.")
 
@@ -283,7 +287,6 @@ class hotel_manager:
                     numero_de_dias = reserva["numDays"]
                     print(numero_de_dias)
                     tipo_de_habitacion = reserva["roomType"]
-                    break
                 else:
                     print("entra en else con localizador no en reservas")
                     raise hme('El localizador no está en las reservas')
@@ -320,15 +323,19 @@ class hotel_manager:
 
 
 
-    @freeze_time("2024-06-16")
+
     def guest_departure(self, room_key):
+        '''
+        funcion guest departure
+        '''
         checkouts = self.read_data_from_json(self.__json_path + r"\estancias.json", "r")
         if not checkouts:
             raise hme("No hay datos de estancias")
 
         # Comprueba que el room_key esté en un formato correcto
         if not re.match(r"^[a-fA-F0-9]{64}$", room_key):
-            raise hme("Código de habitación no cumple con el formato correcto")
+            print('no coincide el codigo de habitacion')
+            raise hme("hotel_management_exception: Código de habitación no cumple con el formato correcto")
 
 
         # Para cada entrada de chechout, miramos si la llave de la habitación coincide con la que se ha pasado como argumento
@@ -337,26 +344,22 @@ class hotel_manager:
         hoy = datetime.now().date().strftime("%d/%m/%Y")
         print(checkouts)
         for checkout in checkouts:
-            print('holaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             if checkout["room_key"] == room_key:
                 entracheckout = True
-                print('ha comprobado la roomkey')
-                print('la fecha de salida es:', checkout["departure"])
-                print('la fecha de hoy es:', hoy)
                 hoy = datetime.strptime(hoy, "%d/%m/%Y")
-                print('fecha salida', type((hoy + timedelta(days=int(checkout["num_days"]))).strftime("%d/%m/%Y")))
                 checkout_departure = datetime.strptime(checkout["departure"], "%d/%m/%Y")
                 checkout_departure = checkout_departure.strftime("%d/%m/%Y")
-                print('type check', type(checkout_departure), 'dato= ', checkout_departure)
-                # if checkout_departure == hoy + timedelta(days=int(checkout["num_days"])):
+                print(hoy)
+                print(checkout_departure)
                 if str(checkout_departure) == (hoy + timedelta(days=int(checkout["num_days"]))).strftime("%d/%m/%Y"):
                     entrafecha = True
-                    print('exito')
+                    print((hoy + timedelta(days=int(checkout["num_days"]))).strftime("%d/%m/%Y"))
+                    print('es la misma fecha')
 
         # Si el room_key existe, verificar que la fecha de salida esperada coincida con hoy
-        if entracheckout == False:
+        if entracheckout is False:
             raise hme("La llave de la habitación no existe")
-        if entrafecha == False:
+        if entrafecha is False:
             raise hme("La fecha de salida no coincide con la de hoy")
 
         # Si lo anterior es correcto, guardar los datos (fecha de salida + llave de la habitación) en un nuevo archivo checkouts.json mediante writeDataToJson
@@ -364,10 +367,10 @@ class hotel_manager:
         checkouts2 = self.read_data_from_json(self.__json_path + r"\checkouts.json", "r")
         if not checkouts2:
             checkouts2 = []
-
         # Escribir los datos en el archivo mediante writeDataToJson salvo que esa persona ya haya hecho checkout ese dia
         # Tiene que ser ubn archivo tipo json con la forma: "departure": hoy, "room_key": room_key
         for checkout in checkouts2:
+            print(checkout["room_key"])
             if checkout["room_key"] == room_key:
                 raise hme("La persona ya ha hecho checkout hoy")
         # checkouts2["Room_key"] = room_key
@@ -378,6 +381,8 @@ class hotel_manager:
         }
         if checkoutactual not in checkouts2:
             checkouts2.append(checkoutactual)
+        print('casi final de la linea')
         self.write_data_to_json(self.__json_path + r"\checkouts.json", checkouts2, "w")
 
+        print('va a terminar la funcion correcto')
         return True

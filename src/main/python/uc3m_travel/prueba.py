@@ -1,17 +1,21 @@
+"""
+prueba
+"""
 import copy
 import json
 import unittest
 import os.path
 from unittest import TestCase
 
-from tomlkit import string
 
+from freezegun import freeze_time
 from src.main.python.uc3m_travel.hotel_manager import hotelManager
 from src.main.python.uc3m_travel.hotel_management_exception import hotelManagementException
 from src.main.python.uc3m_travel.hotel_stay import hotelStay
+from tomlkit import string
 from pathlib import Path
 from datetime import datetime
-from freezegun import freeze_time
+
 
 
 class testGuestCheckout(TestCase):
@@ -36,13 +40,16 @@ class testGuestCheckout(TestCase):
 
     @freeze_time("2024-06-16")
     def test_guest_checkout_tc1(self):  # TEST VALIDO
-        for input_data in self.__test_data_credit_card:
-            if input_data["idTest"] == "TC1":
-                with self.subTest(input_data["idTest"]):
-                    print("Executing: " + input_data["idTest"])
+        '''
+        test valido
+        '''
+        for inputData in self.__test_data_credit_card:
+            if inputData["idTest"] == "TC1":
+                with self.subTest(inputData["idTest"]):
+                    print("Executing: " + inputData["idTest"])
                     hm = hotelManager()
-                verdadero = hm.guest_checkout(input_data["roomKey"])
-                match input_data["idTest"]:
+                verdadero = hm.guest_checkout(inputData["roomKey"])
+                match inputData["idTest"]:
                     case "TC1":
                         self.assertEqual(verdadero, True)
 
@@ -50,14 +57,14 @@ class testGuestCheckout(TestCase):
 
     @freeze_time("2024-06-16")
     def test_guest_checkout_tc2(self):  # TEST INVALIDOS
-        for input_data in self.__test_data_credit_card:
-            if input_data["idTest"] in ["TC2", "TC3", "TC4", "TC5", "TC6"]:
-                with self.subTest(input_data["idTest"]):
-                    print("Executing: " + input_data["idTest"])
+        for inputData in self.__test_data_credit_card:
+            if inputData["idTest"] in ["TC2", "TC3", "TC4", "TC5", "TC6"]:
+                with self.subTest(inputData["idTest"]):
+                    print("Executing: " + inputData["idTest"])
                     hm = hotelManager()
                     with self.assertRaises(hotelManagementException) as result:
-                        hm.guest_checkout(input_data["roomKey"])
-                    match input_data["idTest"]:
+                        hm.guest_checkout(inputData["roomKey"])
+                    match inputData["idTest"]:
                         case "TC2": #TC2
                             self.assertEqual(result.exception.message,"roomKey tiene menos de 64 caracteres")
                         case "TC3": #TC2
@@ -71,22 +78,22 @@ class testGuestCheckout(TestCase):
 
     @freeze_time("2024-07-17")
     def test_guest_checkout_tc3(self):  # TEST INVALIDOS
-        for input_data in self.__test_data_credit_card:
-            if input_data["idTest"] in ["TC7"]:
-                with self.subTest(input_data["idTest"]):
-                    print("Executing: " + input_data["idTest"])
+        for inputData in self.__test_data_credit_card:
+            if inputData["idTest"] in ["TC7"]:
+                with self.subTest(inputData["idTest"]):
+                    print("Executing: " + inputData["idTest"])
                     hm = hotelManager()
                     with self.assertRaises(hotelManagementException) as result:
-                        hm.guest_checkout(input_data["roomKey"])
-                    match input_data["idTest"]:
+                        hm.guest_checkout(inputData["roomKey"])
+                    match inputData["idTest"]:
                         case "TC7": #TC4 y TC5
                             self.assertEqual(result.exception.message,"La fecha de salida no es hoy")
 
     def test_guest_checkout_tc4(self):  # TEST INVALIDO COMPROBAR JSONDECODEERROR EN RESERVAS2.JSON
-        for input_data in self.__test_data_credit_card:
-            if input_data["idTest"] in ["TC8"]:
-                with self.subTest(input_data["idTest"]):
-                    print("Executing: " + input_data["idTest"])
+        for inputData in self.__test_data_credit_card:
+            if inputData["idTest"] in ["TC8"]:
+                with self.subTest(inputData["idTest"]):
+                    print("Executing: " + inputData["idTest"])
                     hm = hotelManager()
                     with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="r") as f:
                         data = json.load(f)
@@ -94,19 +101,19 @@ class testGuestCheckout(TestCase):
                     with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="a") as f:
                         json.dump("hola", f)
                     with self.assertRaises(hotelManagementException) as result:
-                        hm.guest_checkout(input_data["roomKey"])
+                        hm.guest_checkout(inputData["roomKey"])
                     with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="w") as f:
                         json.dump(data, f)
 
-                    match input_data["idTest"]:
+                    match inputData["idTest"]:
                         case "TC8":
                             self.assertEqual(result.exception.message,"El archivo de reservasf2 no está en formato JSON")
 
     def test_guest_checkout_tc5(self):  # TEST INVALIDO COMPROBAR ARCHIVO RESERVAS2 VACIO
-        for input_data in self.__test_data_credit_card:
-            if input_data["idTest"] in ["TC9"]:
-                with self.subTest(input_data["idTest"]):
-                    print("Executing: " + input_data["idTest"])
+        for inputData in self.__test_data_credit_card:
+            if inputData["idTest"] in ["TC9"]:
+                with self.subTest(inputData["idTest"]):
+                    print("Executing: " + inputData["idTest"])
                     hm = hotelManager()
                     with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="r") as f:
                         data = json.load(f)
@@ -114,20 +121,20 @@ class testGuestCheckout(TestCase):
                     with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="w") as f:
                         json.dump("", f)
                     with self.assertRaises(hotelManagementException) as result:
-                        hm.guest_checkout(input_data["roomKey"])
+                        hm.guest_checkout(inputData["roomKey"])
                     with open(self.__path_tests + r'\reservas2.json', encoding="UTF-8", mode="w") as f:
                         json.dump(data, f)
 
-                    match input_data["idTest"]:
+                    match inputData["idTest"]:
                         case "TC9": #TC1
                             self.assertEqual(result.exception.message,"El archivo de reservas2.json está vacío")
 
     @freeze_time("2024-06-16")
     def test_guest_checkout_tc6(self):  # TEST INVALIDO COMPROBAR ARCHIVO RESERVAS3 JSONDECODEERROR
-        for input_data in self.__test_data_credit_card:
-            if input_data["idTest"] in ["TC10"]:
-                with self.subTest(input_data["idTest"]):
-                    print("Executing: " + input_data["idTest"])
+        for inputData in self.__test_data_credit_card:
+            if inputData["idTest"] in ["TC10"]:
+                with self.subTest(inputData["idTest"]):
+                    print("Executing: " + inputData["idTest"])
                     hm = hotelManager()
                     with open(self.__path_tests + r'\reservas3.json', encoding="UTF-8", mode="r") as f:
                         data = json.load(f)
@@ -135,28 +142,28 @@ class testGuestCheckout(TestCase):
                     with open(self.__path_tests + r'\reservas3.json', encoding="UTF-8", mode="a") as f:
                         json.dump("hola", f)
                     with self.assertRaises(hotelManagementException) as result:
-                        hm.guest_checkout(input_data["roomKey"])
+                        hm.guest_checkout(inputData["roomKey"])
                     with open(self.__path_tests + r'\reservas3.json', encoding="UTF-8", mode="w") as f:
                         json.dump(data, f)
 
-                    match input_data["idTest"]:
+                    match inputData["idTest"]:
                         case "TC10":
                             self.assertEqual(result.exception.message,"El archivo de reservas3 no está en formato JSON")
 
     @freeze_time("2024-06-16")
     def test_guest_checkout_tc7(self):  # TEST INVALIDO COMPROBAR ARCHIVO RESERVAS3 JSONDECODEERROR
-        for input_data in self.__test_data_credit_card:
-            if input_data["idTest"] in ["TC11"]:
-                with self.subTest(input_data["idTest"]):
-                    print("Executing: " + input_data["idTest"])
+        for inputData in self.__test_data_credit_card:
+            if inputData["idTest"] in ["TC11"]:
+                with self.subTest(inputData["idTest"]):
+                    print("Executing: " + inputData["idTest"])
                     hm = hotelManager()
                     original_file_path = r"C:\Users\eduardo faro jr\OneDrive\Documentos\3 curso 2 cuatri\EG2\src\main\python\json_files\reservas2.json"
                     new_file_path = r"C:\Users\eduardo faro jr\OneDrive\Documentos\3 curso 2 cuatri\EG2\src\main\python\json_files\reservas2_new.json"
                     os.rename(original_file_path, new_file_path)
                     with self.assertRaises(hotelManagementException) as result:
-                        hm.guest_checkout(input_data["roomKey"])
+                        hm.guest_checkout(inputData["roomKey"])
                     os.rename(new_file_path, original_file_path)
-                    match input_data["idTest"]:
+                    match inputData["idTest"]:
                         case "TC11":
                             self.assertEqual(result.exception.message,
                                              "Wrong file or file path")
