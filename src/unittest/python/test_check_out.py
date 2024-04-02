@@ -41,7 +41,6 @@ class test_check_out(TestCase):
                     print("Ejecutando: " + inputData["id_test"])
                 hm = hotel_manager()
                 localizer = hm.guest_departure(inputData["room_key"])
-                # print (localizer)
                 if inputData["id_test"] == "TC7":
                     print("entra en test1 ****")
                     self.assertTrue(localizer)
@@ -54,13 +53,11 @@ class test_check_out(TestCase):
         """TestCases - Expected NOT OK."""
         for inputData in self.__test_check_out:
             if inputData["id_test"] not in ["TC7", "TC8", "TC1"]:
-                print("ENTRA EN NOT OK *****************+")
                 with self.subTest(inputData["id_test"]):
                     print("Ejecutando: " + inputData["id_test"])
                     hm = hotel_manager()
                     print("id_test", inputData["id_test"])
                     with self.assertRaises(hotel_management_exception) as result:
-                        print("HOLA*")
                         hm.guest_departure(inputData["room_key"])
 
                     #if inputData["id_test"] == "TC1":
@@ -77,16 +74,18 @@ class test_check_out(TestCase):
                         self.assertEqual(result.exception.message,
                                          "La llave de la habitación no existe")
                     elif inputData["id_test"] == "TC4":
-                        with freeze_time("1999-01-01"):
+                        with freeze_time("1999/01/01"):
+                            with self.assertRaises(hotel_management_exception) as result:
+                                hm.guest_departure(inputData["room_key"])
                             print("entra en test4 ****")
                             self.assertEqual(result.exception.message,
                                              "La fecha de salida no coincide con la de hoy")
 
                     elif inputData["id_test"] == "TC5":
                         print("entra en test5 ****")
-                        freeze_time("2028-08-01")
-                        self.assertEqual(result.exception.message,
-                                         "La fecha de salida no coincide con la de hoy")
+                        with freeze_time("2028-08-01"):
+                            self.assertEqual(result.exception.message,
+                                             "La fecha de salida no coincide con la de hoy")
 
                     elif inputData["id_test"] == "TC6":
                         print("entra en test6 ****")

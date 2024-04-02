@@ -10,20 +10,20 @@ class hotel_management_exception(Exception):
         """
         init
         """
-        print("ENTRS INITTTT")
         self.__message = message
         super().__init__(self.message)
 
-    def __str__(self):
-        return f"hotel_management_exception: {self.__message}"
+    def _str_(self):
+        """
+        Return the exception message.
+        """
+        return self.__message
     @property
     def message(self):
         """
         hace un return
         :return:
         """
-        print("ENTRA MESSAGEEEEE")
-        print('el mensake es:',self.__message)
         return self.__message
 
     @message.setter

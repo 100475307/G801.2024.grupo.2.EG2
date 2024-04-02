@@ -272,25 +272,19 @@ class hotel_manager:
             try:
                 validate(instance=data, schema=esquema)
             except ValidationError as e:
-                print("formato del archivo json incorrecto despues de ifssss")
                 raise hme("Formato del archivo JSON incorrecto") from e
 
             #HM-FR-02-P1:control para ver que el localizador esta en reservas y tiene el mismo ID
             reservas = self.read_data_from_json(self.__json_path + r"\reservas.json", "r")
 
             for reserva in reservas:
-                print("entra en bucle reservas")
                 if data["Localizer"] in reserva["localizador"]:
-                    print('encuentra el localizador')
                     if reserva["id_card"] != data["IdCard"]:
-                        print("entra en localizador e id no coinciden")
                         raise hme('El localizador de la reserva y el ID no coinciden')
                     numero_de_dias = reserva["numDays"]
-                    print(numero_de_dias)
                     tipo_de_habitacion = reserva["roomType"]
                     break
                 else:
-                    print(data["Localizer"])
                     raise hme('El localizador no está en las reservas')
 
             #HM-FR-02-P2: creación de la instancia
@@ -299,7 +293,6 @@ class hotel_manager:
             estancia = hotel_stay(data["IdCard"], data["Localizer"], numero_de_dias, tipo_de_habitacion)
             arrival = str(estancia.arrival)
             departure = estancia.departure.strftime("%d/%m/%Y")
-
             room_key = estancia.room_key
             # Almacenar los datos de la estancia en el archivo
             estanciaA = {
@@ -317,10 +310,8 @@ class hotel_manager:
             return room_key
 
         except FileNotFoundError as e:
-            print("entra en final wrong file or path")
             raise hme("Archivo o camino incorrecto") from e
         except json.JSONDecodeError as e:
-            print("entra en final formato de json incorrecto")
             raise hme("Formato del archivo JSON incorrecto") from e
 
 
@@ -336,7 +327,6 @@ class hotel_manager:
 
         # Comprueba que el room_key esté en un formato correcto
         if not re.match(r"^[a-fA-F0-9]{64}$", room_key):
-            print('no coincide el codigo de habitacion')
             raise hme("hotel_management_exception: Código de habitación no cumple con el formato correcto")
 
 
@@ -344,26 +334,22 @@ class hotel_manager:
         # Si la llave de la habitación existe, ponemos una booleana EntraCkeckout a True
         entracheckout, entrafecha = False, False
         hoy = datetime.now().date().strftime("%d/%m/%Y")
-        print(checkouts)
         for checkout in checkouts:
             if checkout["room_key"] == room_key:
                 entracheckout = True
                 hoy = datetime.strptime(hoy, "%d/%m/%Y")
+                print('la fecha de llegada es: ',hoy)
                 checkout_departure = datetime.strptime(checkout["departure"], "%d/%m/%Y")
                 checkout_departure = checkout_departure.strftime("%d/%m/%Y")
-                print(hoy)
-                print(checkout_departure)
+                print('la fecha de salida es:', checkout_departure)
                 if str(checkout_departure) == (hoy + timedelta(days=int(checkout["num_days"]))).strftime("%d/%m/%Y"):
                     entrafecha = True
-                    print((hoy + timedelta(days=int(checkout["num_days"]))).strftime("%d/%m/%Y"))
-                    print('es la misma fecha')
 
         # Si el room_key existe, verificar que la fecha de salida esperada coincida con hoy
         if entracheckout is False:
             raise hme("La llave de la habitación no existe")
         if entrafecha is False:
             raise hme("La fecha de salida no coincide con la de hoy")
-
         # Si lo anterior es correcto, guardar los datos (fecha de salida + llave de la habitación) en un nuevo archivo checkouts.json mediante writeDataToJson
         # si falla la apetura del archivo porque no existe, crearlo
         checkouts2 = self.read_data_from_json(self.__json_path + r"\checkouts.json", "r")
@@ -372,7 +358,6 @@ class hotel_manager:
         # Escribir los datos en el archivo mediante writeDataToJson salvo que esa persona ya haya hecho checkout ese dia
         # Tiene que ser ubn archivo tipo json con la forma: "departure": hoy, "room_key": room_key
         for checkout in checkouts2:
-            print(checkout["room_key"])
             if checkout["room_key"] == room_key:
                 raise hme("La persona ya ha hecho checkout hoy")
         # checkouts2["Room_key"] = room_key
@@ -383,8 +368,5 @@ class hotel_manager:
         }
         if checkoutactual not in checkouts2:
             checkouts2.append(checkoutactual)
-        print('casi final de la linea')
         self.write_data_to_json(self.__json_path + r"\checkouts.json", checkouts2, "w")
-
-        print('va a terminar la funcion correcto')
         return True

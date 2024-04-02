@@ -44,7 +44,6 @@ class test_room_reservation(TestCase):
                 hm = hotel_manager()
                 localizer = hm.room_reservation(inputData["credit_card_number"], inputData["id_card"],
                                                 inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"], inputData["arrival"], inputData["num_days"])
-                # print (localizer)
                 if inputData["id_test"] == "TC1":
                     print("entra en test1 ****")
                     self.assertEqual(localizer, "445b2a1066b7d5a517c0b293bd1667a1")
@@ -99,12 +98,8 @@ class test_room_reservation(TestCase):
                     hm = hotel_manager()
                     print("id_test", inputData["id_test"])
                     with self.assertRaises(hotel_management_exception) as result:
-                        print("HOLA*****************")
                         hm.room_reservation(inputData["credit_card_number"], inputData["id_card"], inputData["name_and_surname"],
                                             inputData["phone_number"], inputData["room_type"], inputData["arrival"], inputData["num_days"])
-                    print("credit_card_number", inputData["credit_card_number"], "id_card", inputData["id_card"],
-                          inputData["name_and_surname"], inputData["phone_number"], inputData["room_type"],
-                          inputData["arrival"], inputData["num_days"])
                     if inputData["id_test"] == "TC2":
                         print("entra en test2 ****")
                         self.assertEqual(result.exception.message,

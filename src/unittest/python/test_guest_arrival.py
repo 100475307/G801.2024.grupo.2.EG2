@@ -46,10 +46,8 @@ class test_guest_arrival(TestCase):
                 print("Executing: " + testid + ":" + inputdata)
                 with open(inputdata, 'r',encoding='utf-8') as archivoPrueba:
                     datos = json.load(archivoPrueba)
-                print('los datos que esta comprobando son: ',datos)
                 hm = hotel_manager()
                 roomkey = hm.guest_arrival(inputdata)
-                print('el room key desl test es :', roomkey)
                 if testid == "TC1":
                     self.assertEqual(roomkey,
                                      "f3ca36cc66ed95a19b8ed0786ee5dc64348e8d84a812fb0d54f07419d95487bf")
@@ -68,11 +66,8 @@ class test_guest_arrival(TestCase):
                 with self.subTest(testid):
                     print("Executing: " + testid + ":" + inputdata)
                     hm = hotel_manager()
-                    print('antes de entrar a al with')
                     with self.assertRaises(hotel_management_exception) as result:
-                        print('entra en el result')
                         roomkey = hm.guest_arrival(inputdata)
-                        print('sale del with +++++++++++++++++++++++++++++')
                     if testid == "TC8":
                         self.assertEqual(result.exception.message,
                                          "Hay un fallo de escritura en alguna de las claves")
@@ -129,8 +124,6 @@ class test_guest_arrival(TestCase):
                     hm = hotel_manager()
 
                     with self.assertRaises(hotel_management_exception) as result:
-                        print('entra en el result')
                         roomkey = hm.guest_arrival(inputdata)
-                        print('sale del with del segundo caso  +++++++++++++++++++++++++++++')
                     self.assertEqual(result.exception.message,
                                      "Formato del archivo JSON incorrecto")
