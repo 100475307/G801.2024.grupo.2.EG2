@@ -1,13 +1,11 @@
 """Fichero para incluir los casos de pruebas de la funcion 1"""
 import copy
 import json
-import sys
 import os.path
 from unittest import TestCase
+from freezegun import freeze_time
 from pathlib import Path
 from datetime import datetime
-from freezegun import freeze_time
-sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 from src.main.python.uc3m_travel.hotel_manager import hotel_manager
 from src.main.python.uc3m_travel.hotel_management_exception import hotel_management_exception
 from src.main.python.uc3m_travel.hotel_stay import hotel_stay
@@ -67,18 +65,15 @@ class test_check_out(TestCase):
                     with self.assertRaises(hotel_management_exception) as result:
                         print("HOLA*")
                         hm.guest_departure(inputData["room_key"])
-                        print("room_key", inputData["room_key"], "departure", inputData["departure"])
+
                     #if inputData["id_test"] == "TC1":
                     #    print("entra en test1 ****")
                     #    self.assertEqual(result.exception.message,
                     #                     "No hay datos de estancias")
                     if inputData["id_test"] == "TC2":
                         print("entra en test2 ****")
-                        print('mensaje de vuelta es: ',result.exception.message)
-                        print('el mensaje compara es:', "Código de habitación no cumple con el formato correcto")
-                        self.assertEqual(result.exception.message,"Código de habitación no cumple con el formato correcto")
-
-
+                        self.assertEqual(result.exception.message,
+                                         "Código de habitación no cumple con el formato correcto")
                     elif inputData["id_test"] == "TC3":
                         print("entra en test3 ****")
                         self.assertEqual(result.exception.message,

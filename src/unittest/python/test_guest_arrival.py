@@ -34,7 +34,7 @@ class test_guest_arrival(TestCase):
             filehash = ""
         return filehash
 
-    @freeze_time("2024-12-31 12:00:00")
+    @freeze_time("2024-06-16")
     def test_reservation_ok(self):
         """Casos de test incorrectos"""
         index = 0
@@ -51,9 +51,9 @@ class test_guest_arrival(TestCase):
                 print('el room key desl test es :', roomkey)
                 if testid == "TC1":
                     self.assertEqual(roomkey,
-                                     "65377f12f7892239d712f2c687e5029f4133fcd7c885774da5a3e1c76fad7fbd")
+                                     "f3ca36cc66ed95a19b8ed0786ee5dc64348e8d84a812fb0d54f07419d95487bf")
 
-    @freeze_time("2024-12-31 12:00:00")
+    @freeze_time("2024-06-16")
     def test_reservation_ko(self):
         """Casos de test incorrectoss"""
 

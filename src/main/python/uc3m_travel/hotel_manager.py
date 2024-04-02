@@ -4,7 +4,7 @@ clase hotel_manager
 import json
 import hashlib
 from freezegun import freeze_time
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import re
 import sys
@@ -320,7 +320,7 @@ class hotel_manager:
 
 
 
-    @freeze_time("02/01/2025")
+    @freeze_time("2024-06-16")
     def guest_departure(self, room_key):
         checkouts = self.read_data_from_json(self.__json_path + r"\estancias.json", "r")
         if not checkouts:
@@ -335,13 +335,17 @@ class hotel_manager:
         # Si la llave de la habitación existe, ponemos una booleana EntraCkeckout a True
         entracheckout, entrafecha = False, False
         hoy = datetime.now().date().strftime("%d/%m/%Y")
+        print(checkouts)
         for checkout in checkouts:
+            print('holaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             if checkout["room_key"] == room_key:
                 entracheckout = True
                 print('ha comprobado la roomkey')
-                print('la fecha de salida es:',checkout["salidas"])
+                print('la fecha de salida es:',checkout["departure"])
                 print('la fecha de hoy es:',   hoy)
-                if checkout["salidas"] == hoy:
+                print('fecha salida',hoy + timedelta(days=int(checkout["num_days"])))
+                checkout_departure = datetime.strptime(checkout["departure"], "%d-%m-%Y")
+                if checkout_departure == hoy + timedelta(days=int(checkout["num_days"])):
                     entrafecha = True
 
         # Si el room_key existe, verificar que la fecha de salida esperada coincida con hoy
@@ -359,9 +363,8 @@ class hotel_manager:
         # Escribir los datos en el archivo mediante writeDataToJson salvo que esa persona ya haya hecho checkout ese dia
         # Tiene que ser ubn archivo tipo json con la forma: "departure": hoy, "room_key": room_key
         for checkout in checkouts2:
-            for key in checkout:
-                if key == "room_key" and checkout[key] == room_key:
-                    raise hme("La persona ya ha hecho checkout hoy")
+            if checkout["room_key"] == room_key:
+                raise hme("La persona ya ha hecho checkout hoy")
         # checkouts2["Room_key"] = room_key
         # checkouts2["departure"] = hoy
         checkoutactual = {

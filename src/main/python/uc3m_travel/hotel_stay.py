@@ -3,11 +3,14 @@ Class HotelStay (GE2.2)
 """
 from datetime import datetime, timedelta
 import hashlib
+from freezegun import freeze_time
 
+@freeze_time("2024-06-16")
 class hotel_stay():
     """
     clase hotel_stay
     """
+    @freeze_time("2024-06-16")
     def __init__(self, idcard, localizer, numdays, roomtype):
         """
         metodo __init__

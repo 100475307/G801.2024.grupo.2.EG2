@@ -1,28 +1,29 @@
 [
   {
     "id_test": "TC2",
-    "room_key": "FD3682A75DB3EDFECD1140E241BC408D8C9EE",
-    "departure": "31/03/2024"
+    "room_key": "FD3682A75DB3EDFECD1140E241BC408D8C9EE"
+
   },{
     "id_test": "TC3",
-    "room_key": "8830A0C0CF472056A34E3081077911BBE100A56B60FCFC9FCD4A1D81377CD0D7",
-    "departure": "31/03/2024"
+    "room_key": "8830A0C0CF472056A34E3081077911BBE100A56B60FCFC9FCD4A1D81377CD0D7"
+
   },{
     "id_test": "TC4",
-    "room_key": "65377f12f7892239d712f2c687e5029f4133fcd7c885774da5a3e1c76fad7fbd",
-    "departure": "20/06/2024"
+    "room_key": "f3ca36cc66ed95a19b8ed0786ee5dc64348e8d84a812fb0d54f07419d95487bf"
+
   },{
     "id_test": "TC5",
-    "room_key": "65377f12f7892239d712f2c687e5029f4133fcd7c885774da5a3e1c76fad7fbd",
-    "departure": "20/03/2025"
+    "room_key": "f3ca36cc66ed95a19b8ed0786ee5dc64348e8d84a812fb0d54f07419d95487bf"
+
   },
   {
     "id_test": "TC7",
-    "room_key": "65377f12f7892239d712f2c687e5029f4133fcd7c885774da5a3e1c76fad7fbd",
-    "departure": "31/03/2024"
+    "room_key": "f3ca36cc66ed95a19b8ed0786ee5dc64348e8d84a812fb0d54f07419d95487bf"
+
   },{
     "id_test": "TC6",
-    "room_key": "65377f12f7892239d712f2c687e5029f4133fcd7c885774da5a3e1c76fad7fbd",
+    "room_key": "f3ca36cc66ed95a19b8ed0786ee5dc64348e8d84a812fb0d54f07419d95487bf"
+
   }
 
 ]
