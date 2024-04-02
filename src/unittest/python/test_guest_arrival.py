@@ -6,7 +6,7 @@ import hashlib
 from freezegun import freeze_time
 import sys
 
-sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 from hotel_stay import hotel_stay
 from hotel_manager import hotel_manager
 from hotel_management_exception import hotel_management_exception
@@ -14,8 +14,8 @@ from hotel_management_exception import hotel_management_exception
 
 class test_guest_arrival(TestCase):
     """clase para los test de la función 2"""
-    __path_tests = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
-    __path_data = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_tests = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __path_data = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
 
     def setUp(self):
         """funcion setUp"""
@@ -41,7 +41,7 @@ class test_guest_arrival(TestCase):
         if index + 1 == 1:
             testid = "TC" + str(index + 1)
             with self.subTest(testid):
-                inputdata = r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index+1) + r".json"
+                inputdata = r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index+1) + r".json"
                 print("Executing: " + testid + ":" + inputdata)
                 with open(inputdata, 'r') as archivo_prueba:
                     datos = json.load(archivo_prueba)
@@ -62,7 +62,7 @@ class test_guest_arrival(TestCase):
                 pass
             elif index + 1 in [8, 11, 12, 15, 18, 19, 21, 25, 49, 50, 55, 56, 61, 62, 67, 68]:
                 testid = "TC" + str(index + 1)
-                inputdata = r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(
+                inputdata = r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(
                     index + 1) + r".json"
                 with self.subTest(testid):
                     print("Executing: " + testid + ":" + inputdata)
@@ -123,7 +123,7 @@ class test_guest_arrival(TestCase):
             else:
                 testid = "TC" + str(index + 1)
                 with self.subTest(testid):
-                    inputdata = r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index + 1) + r".json"
+                    inputdata = r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files" + r"\test2" + r"\test" + str(index + 1) + r".json"
                     print("Executing: " + testid + ":" + inputdata)
                     hm = hotel_manager()
 

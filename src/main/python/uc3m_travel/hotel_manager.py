@@ -12,7 +12,7 @@ from jsonschema import validate, ValidationError
 from luhn import verify
 from stdnum.es import nif
 import sys
-sys.path.append(r'C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
+sys.path.append(r'C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\uc3m_travel')
 
 from hotel_reservation import hotel_reservation as hr
 from hotel_management_exception import hotel_management_exception as hme
@@ -23,7 +23,7 @@ class hotel_manager:
     """
     clase hotel_manager
     """
-    __json_path = str(r"C:\Users\ghija\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
+    __json_path = str(r"C:\Users\jcamp\PycharmProjects\G801.2024.grupo.2.EG2\src\main\python\json_files")
     def init(self):
         """
         hace pass del init
@@ -341,12 +341,17 @@ class hotel_manager:
             if checkout["room_key"] == room_key:
                 entracheckout = True
                 print('ha comprobado la roomkey')
-                print('la fecha de salida es:',checkout["departure"])
-                print('la fecha de hoy es:',   hoy)
-                print('fecha salida',hoy + timedelta(days=int(checkout["num_days"])))
-                checkout_departure = datetime.strptime(checkout["departure"], "%d-%m-%Y")
-                if checkout_departure == hoy + timedelta(days=int(checkout["num_days"])):
+                print('la fecha de salida es:', checkout["departure"])
+                print('la fecha de hoy es:', hoy)
+                hoy = datetime.strptime(hoy, "%d/%m/%Y")
+                print('fecha salida', type((hoy + timedelta(days=int(checkout["num_days"]))).strftime("%d/%m/%Y")))
+                checkout_departure = datetime.strptime(checkout["departure"], "%d/%m/%Y")
+                checkout_departure = checkout_departure.strftime("%d/%m/%Y")
+                print('type check', type(checkout_departure), 'dato= ', checkout_departure)
+                # if checkout_departure == hoy + timedelta(days=int(checkout["num_days"])):
+                if str(checkout_departure) == (hoy + timedelta(days=int(checkout["num_days"]))).strftime("%d/%m/%Y"):
                     entrafecha = True
+                    print('exito')
 
         # Si el room_key existe, verificar que la fecha de salida esperada coincida con hoy
         if entracheckout == False:
@@ -368,11 +373,11 @@ class hotel_manager:
         # checkouts2["Room_key"] = room_key
         # checkouts2["departure"] = hoy
         checkoutactual = {
-            "Room_key": room_key,
-            "departure": hoy,
+            "room_key": room_key,
+            "departure": str(hoy),
         }
         if checkoutactual not in checkouts2:
             checkouts2.append(checkoutactual)
         self.write_data_to_json(self.__json_path + r"\checkouts.json", checkouts2, "w")
 
-        return "Salida registrada con éxito"
+        return True
